@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.EncryptionUtils;
 
@@ -56,7 +57,7 @@ public class LoginActivityFragment extends Fragment {
         task.setOnPostCompleteListener(new OnPostCompleteListener() {
             @Override
             public void onPostComplete(String result) throws JSONException {
-                Log.d(getClass().getSimpleName(), result);
+                Log.i(getClass().getSimpleName(), result);
 
                 mSignInProgressBar.animate().setDuration(50).alpha(0);
                 mSignInProgressBar.setVisibility(View.INVISIBLE);
@@ -65,7 +66,7 @@ public class LoginActivityFragment extends Fragment {
                 Snackbar.make(getView(), jsonResult.getString("message"), Snackbar.LENGTH_SHORT).show();
 
                 if(jsonResult.getString("status").equals("SUCCESS")) {
-                    UserSingleton.get(getActivity()).setUser(new User(jsonResult.getJSONObject("user")));
+                    UserSingleton.get(getActivity()).setUser(User.buildFromJSON(jsonResult.getJSONObject("user")));
                     startActivity(new Intent(getActivity(), TimelineActivity.class));
                 }
             }
