@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.firstadie.csftcarroll.b00641329.firstaide.TimelineActivityFragment"
+    tools:context="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivityFragment"
     tools:showIn="@layout/activity_timeline">
 
     <android.support.v7.widget.AppCompatTextView

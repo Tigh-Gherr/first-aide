@@ -1,4 +1,4 @@
-package com.firstadie.csftcarroll.b00641329.firstaide;
+package com.firstadie.csftcarroll.b00641329.firstaide.ui.LoginActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +12,20 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.firstadie.csftcarroll.b00641329.firstaide.OnPostCompleteListener;
+import com.firstadie.csftcarroll.b00641329.firstaide.OnUserConfirmedListener;
+import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
+import com.firstadie.csftcarroll.b00641329.firstaide.R;
+import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity;
+import com.firstadie.csftcarroll.b00641329.firstaide.User;
+import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.EncryptionUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +48,24 @@ public class LoginActivityFragment extends Fragment {
     private void attemptLogin() {
         String email = mEmailEditText.getText().toString().trim();
         String password = mPasswordEditText.getText().toString();
+
+        if(!LoginUtils.isValidEmail(email)) {
+            mEmailEditText.setError("Email address is not valid.");
+        }
+
+        if(!LoginUtils.isValidPassword(password)) {
+            mPasswordEditText.setError("Password does not meet criteria.");
+        }
+
+        if(mEmailEditText.getError() != null) {
+            mEmailEditText.requestFocus();
+            return;
+        }
+
+        if(mPasswordEditText.getError() != null) {
+            mPasswordEditText.requestFocus();
+            return;
+        }
 
         String hashedAndSaltedPassword = EncryptionUtils.hashAndSalt(password, email);
 
@@ -74,8 +102,8 @@ public class LoginActivityFragment extends Fragment {
         task.execute("https://uniprojects.000webhostapp.com/login.php", json.toString());
     }
 
-    private void showAccountCreationDialog() {
-        CreateAccountDialog dialog = CreateAccountDialog.newInstance();
+    private void showAccountCreationDialog(String email, String password) {
+        CreateAccountDialog dialog = CreateAccountDialog.newInstance(email, password);
         dialog.setUserConfirmedListener(new OnUserConfirmedListener() {
             @Override
             public void onConfirmed(String message, String email) {
@@ -99,14 +127,13 @@ public class LoginActivityFragment extends Fragment {
 
         mEmailEditText = view.findViewById(R.id.edittext_email);
         mPasswordEditText = view.findViewById(R.id.edittext_password);
-        mPasswordEditText.setOnKeyListener(new View.OnKeyListener() {
+        mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getAction() == KeyEvent.ACTION_DOWN && i == KeyEvent.KEYCODE_ENTER) {
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_GO) {
                     mSignInButton.callOnClick();
                     return true;
                 }
-
                 return false;
             }
         });
@@ -115,7 +142,13 @@ public class LoginActivityFragment extends Fragment {
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showAccountCreationDialog();
+                if(NetworkUtils.isNetworkAvailable(getActivity())) {
+                    String email = mEmailEditText.getText().toString().trim();
+                    String password = mPasswordEditText.getText().toString();
+                    showAccountCreationDialog(email, password);
+                } else {
+                    Snackbar.make(getView(), "Internet connection required.", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -123,11 +156,16 @@ public class LoginActivityFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                if(NetworkUtils.isNetworkAvailable(getActivity())) {
+                    attemptLogin();
+                } else {
+                    Snackbar.make(getView(), "Internet connection required.", Snackbar.LENGTH_LONG).show();
+                }
             }
         });
 
         mSignInProgressBar = view.findViewById(R.id.progressbar_signIn);
+
     }
 
     @Override

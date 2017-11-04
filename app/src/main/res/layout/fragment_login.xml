@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.firstadie.csftcarroll.b00641329.firstaide.LoginActivityFragment"
+    tools:context="com.firstadie.csftcarroll.b00641329.firstaide.ui.LoginActivity.LoginActivityFragment"
     tools:showIn="@layout/activity_login">
 
     <LinearLayout
@@ -39,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Password"
                 android:inputType="textPassword"
+                android:imeOptions="actionGo"
                 android:maxLines="1"
                 android:singleLine="true"/>
 

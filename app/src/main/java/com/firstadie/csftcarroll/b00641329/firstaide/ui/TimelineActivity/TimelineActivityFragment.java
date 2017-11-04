@@ -1,4 +1,4 @@
-package com.firstadie.csftcarroll.b00641329.firstaide;
+package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,6 +7,10 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.firstadie.csftcarroll.b00641329.firstaide.R;
+import com.firstadie.csftcarroll.b00641329.firstaide.User;
+import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 
 /**
  * A placeholder fragment containing a simple view.

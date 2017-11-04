@@ -16,7 +16,7 @@ public class User {
     private String mFirstName;
     private String mSurname;
     private String mEmail;
-    private List<UserActivity> mActivities;
+    private List<UserHobby> mActivities;
 
     public static User buildFromJSON(JSONObject json) throws JSONException {
         int id = json.getInt("id");
@@ -24,7 +24,7 @@ public class User {
         String surname = json.getString("surname");
         String email = json.getString("email");
 
-        List<UserActivity> activities = new ArrayList<>();
+        List<UserHobby> activities = new ArrayList<>();
         JSONArray activitesArray = json.getJSONArray("activities");
         for(int i = 0; i < activitesArray.length(); i++) {
             JSONObject jsonActivity = (JSONObject) activitesArray.get(i);
@@ -32,13 +32,13 @@ public class User {
             int duration = jsonActivity.getInt("duration");
             int priority = jsonActivity.getInt("priority");
             int activityId = jsonActivity.getInt("id");
-            activities.add(new UserActivity(title, duration, priority, activityId));
+            activities.add(new UserHobby(title, duration, priority, activityId));
         }
 
         return new User(id, firstName, surname, email, activities);
     }
 
-    public User(int id, String firstName, String surname, String email, List<UserActivity> activities) {
+    public User(int id, String firstName, String surname, String email, List<UserHobby> activities) {
         mId = id;
         mFirstName = firstName;
         mSurname = surname;
@@ -76,7 +76,7 @@ public class User {
             jsonObject.put("email", mEmail);
 
             JSONArray jsonActivitiesArray = new JSONArray();
-            for(UserActivity activity : mActivities) {
+            for(UserHobby activity : mActivities) {
                 JSONObject jsonActivity = new JSONObject();
                 jsonActivity.put("title", activity.getTitle());
                 jsonActivity.put("duration", activity.getDuration());

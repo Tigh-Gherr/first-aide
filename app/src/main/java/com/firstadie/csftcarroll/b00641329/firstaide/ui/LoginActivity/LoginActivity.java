@@ -1,13 +1,13 @@
-package com.firstadie.csftcarroll.b00641329.firstaide;
+package com.firstadie.csftcarroll.b00641329.firstaide.ui.LoginActivity;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.firstadie.csftcarroll.b00641329.firstaide.R;
+import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 
 public class LoginActivity extends AppCompatActivity {
 

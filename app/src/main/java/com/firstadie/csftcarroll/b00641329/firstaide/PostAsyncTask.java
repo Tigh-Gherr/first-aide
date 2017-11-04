@@ -48,7 +48,7 @@ public class PostAsyncTask extends AsyncTask<String, Void, String> {
             int bytesRead = 0;
             byte[] buffer = new byte[1024];
 
-            while((bytesRead = inputStream.read(buffer)) > 0) {
+            while ((bytesRead = inputStream.read(buffer)) > 0) {
                 out.write(buffer, 0, bytesRead);
             }
             out.close();
@@ -59,7 +59,7 @@ public class PostAsyncTask extends AsyncTask<String, Void, String> {
             e.printStackTrace();
             return null;
         } finally {
-            if(connection != null) {
+            if (connection != null) {
                 connection.disconnect();
             }
         }
@@ -68,7 +68,7 @@ public class PostAsyncTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String s) {
-        if(mListener != null) {
+        if (mListener != null) {
             try {
                 mListener.onPostComplete(s);
             } catch (JSONException e) {
