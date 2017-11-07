@@ -18,7 +18,7 @@ public class User {
     private String mFirstName;
     private String mSurname;
     private String mEmail;
-    private List<UserHobby> mActivities;
+    private List<UserHobby> mUserHobbies;
 
     public static User buildFromJSON(JSONObject json) throws JSONException {
         int id = json.getInt("id");
@@ -40,12 +40,12 @@ public class User {
         return new User(id, firstName, surname, email, activities);
     }
 
-    public User(int id, String firstName, String surname, String email, List<UserHobby> activities) {
+    public User(int id, String firstName, String surname, String email, List<UserHobby> userHobbies) {
         mId = id;
         mFirstName = firstName;
         mSurname = surname;
         mEmail = email;
-        mActivities = activities;
+        mUserHobbies = userHobbies;
     }
 
     public int getId() {
@@ -68,6 +68,10 @@ public class User {
         return mEmail;
     }
 
+    public List<UserHobby> getUserHobbies() {
+        return mUserHobbies;
+    }
+
     public String toJSONString() {
         JSONObject jsonObject = new JSONObject();
 
@@ -78,7 +82,7 @@ public class User {
             jsonObject.put("email", mEmail);
 
             JSONArray jsonActivitiesArray = new JSONArray();
-            for(UserHobby activity : mActivities) {
+            for(UserHobby activity : mUserHobbies) {
                 JSONObject jsonActivity = new JSONObject();
                 jsonActivity.put("title", activity.getTitle());
                 jsonActivity.put("duration", activity.getDuration());

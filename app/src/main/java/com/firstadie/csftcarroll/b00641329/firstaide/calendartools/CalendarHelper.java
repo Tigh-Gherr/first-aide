@@ -8,10 +8,10 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
 
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.CalendarUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -100,8 +100,8 @@ public class CalendarHelper {
 
         Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
 
-        ContentUris.appendId(builder, getDayBracketInMillis(true));
-        ContentUris.appendId(builder, getDayBracketInMillis(false));
+        ContentUris.appendId(builder, CalendarUtils.getDayBracketInMillis(true));
+        ContentUris.appendId(builder, CalendarUtils.getDayBracketInMillis(false));
 
         return mContext.getContentResolver().query(
                 builder.build(),
@@ -112,18 +112,4 @@ public class CalendarHelper {
         );
     }
 
-    private long getDayBracketInMillis(boolean dayStart) {
-        int hourOfDay = dayStart ? 0 : 23;
-        int minute = dayStart ? 0 : 59;
-        int second = dayStart ? 0 : 59;
-        int millisecond = dayStart ? 0 : 9999;
-
-        Calendar time = Calendar.getInstance();
-        time.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        time.set(Calendar.MINUTE, minute);
-        time.set(Calendar.SECOND, second);
-        time.set(Calendar.MILLISECOND, millisecond);
-
-        return time.getTimeInMillis();
-    }
 }

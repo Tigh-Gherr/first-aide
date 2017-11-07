@@ -81,4 +81,9 @@ public class CalendarEvent extends Event {
 
         return jsonObject;
     }
+
+    @Override
+    public String toJSONString() {
+        return toJSONObject().toString();
+    }
 }
