@@ -21,4 +21,9 @@ public class UserHobby extends Event {
     public int getId() {
         return mId;
     }
+
+    @Override
+    public boolean isCalendarEvent() {
+        return false;
+    }
 }

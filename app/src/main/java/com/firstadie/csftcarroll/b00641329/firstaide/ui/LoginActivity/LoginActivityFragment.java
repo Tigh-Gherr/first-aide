@@ -46,23 +46,23 @@ public class LoginActivityFragment extends Fragment {
     }
 
     private void attemptLogin() {
-        String email = mEmailEditText.getText().toString().trim();
+        String email = mEmailEditText.getText().toString().trim().toLowerCase();
         String password = mPasswordEditText.getText().toString();
 
-        if(!LoginUtils.isValidEmail(email)) {
+        if (!LoginUtils.isValidEmail(email)) {
             mEmailEditText.setError("Email address is not valid.");
         }
 
-        if(!LoginUtils.isValidPassword(password)) {
+        if (!LoginUtils.isValidPassword(password)) {
             mPasswordEditText.setError("Password does not meet criteria.");
         }
 
-        if(mEmailEditText.getError() != null) {
+        if (mEmailEditText.getError() != null) {
             mEmailEditText.requestFocus();
             return;
         }
 
-        if(mPasswordEditText.getError() != null) {
+        if (mPasswordEditText.getError() != null) {
             mPasswordEditText.requestFocus();
             return;
         }
@@ -85,7 +85,11 @@ public class LoginActivityFragment extends Fragment {
         task.setOnPostCompleteListener(new OnPostCompleteListener() {
             @Override
             public void onPostComplete(String result) throws JSONException {
-                Log.i(getClass().getSimpleName(), result);
+                if(result != null) {
+                    Log.i(getClass().getSimpleName(), result);
+                } else {
+                    Log.i(getClass().getSimpleName(), "Result is null");
+                }
 
                 mSignInProgressBar.animate().setDuration(50).alpha(0);
                 mSignInProgressBar.setVisibility(View.INVISIBLE);
@@ -93,7 +97,7 @@ public class LoginActivityFragment extends Fragment {
                 JSONObject jsonResult = new JSONObject(result);
                 Snackbar.make(getView(), jsonResult.getString("message"), Snackbar.LENGTH_SHORT).show();
 
-                if(jsonResult.getString("status").equals("SUCCESS")) {
+                if (jsonResult.getString("status").equals("SUCCESS")) {
                     UserSingleton.get(getActivity()).setUser(User.buildFromJSON(jsonResult.getJSONObject("user")));
                     startActivity(new Intent(getActivity(), TimelineActivity.class));
                 }
@@ -130,7 +134,7 @@ public class LoginActivityFragment extends Fragment {
         mPasswordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if(i == EditorInfo.IME_ACTION_GO) {
+                if (i == EditorInfo.IME_ACTION_GO) {
                     mSignInButton.callOnClick();
                     return true;
                 }
@@ -142,7 +146,7 @@ public class LoginActivityFragment extends Fragment {
         mCreateAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(NetworkUtils.isNetworkAvailable(getActivity())) {
+                if (NetworkUtils.isNetworkAvailable(getActivity())) {
                     String email = mEmailEditText.getText().toString().trim();
                     String password = mPasswordEditText.getText().toString();
                     showAccountCreationDialog(email, password);
@@ -156,7 +160,7 @@ public class LoginActivityFragment extends Fragment {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(NetworkUtils.isNetworkAvailable(getActivity())) {
+                if (NetworkUtils.isNetworkAvailable(getActivity())) {
                     attemptLogin();
                 } else {
                     Snackbar.make(getView(), "Internet connection required.", Snackbar.LENGTH_LONG).show();

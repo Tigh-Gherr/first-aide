@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.CalendarHelper;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -19,6 +20,8 @@ public class TimelineActivityFragment extends Fragment {
 
     private User mUser;
     private AppCompatTextView mUserInfoTextView;
+
+    private CalendarHelper mCalendarHelper;
 
     public TimelineActivityFragment() {
     }
@@ -31,9 +34,18 @@ public class TimelineActivityFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        mCalendarHelper = new CalendarHelper(getActivity());
+
         mUser = UserSingleton.get(getActivity()).getUser();
 
         mUserInfoTextView = view.findViewById(R.id.textview_userInfo);
         mUserInfoTextView.setText(mUser.toJSONString());
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mCalendarHelper.getCalendarEvents();
     }
 }

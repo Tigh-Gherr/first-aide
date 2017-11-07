@@ -133,7 +133,7 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
             displayView(true);
             final String firstName = mFirstNameEditText.getText().toString().trim();
             final String surname = mSurnameEditText.getText().toString().trim();
-            final String email = mEmailEditText.getText().toString().trim();
+            final String email = mEmailEditText.getText().toString().trim().toLowerCase();
             final String password = mPasswordEditText.getText().toString().trim();
 
             String hashedAndSaltedPassword = EncryptionUtils.hashAndSalt(password, email);
