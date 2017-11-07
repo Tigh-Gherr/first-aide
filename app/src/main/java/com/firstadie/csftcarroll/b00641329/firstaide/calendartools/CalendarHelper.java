@@ -8,10 +8,7 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Calendar;

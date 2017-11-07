@@ -1,4 +1,6 @@
-package com.firstadie.csftcarroll.b00641329.firstaide;
+package com.firstadie.csftcarroll.b00641329.firstaide.calendartools;
+
+import com.firstadie.csftcarroll.b00641329.firstaide.Event;
 
 /**
  * Created by tigh on 03/11/17.

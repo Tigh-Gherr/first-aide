@@ -1,4 +1,6 @@
-package com.firstadie.csftcarroll.b00641329.firstaide;
+package com.firstadie.csftcarroll.b00641329.firstaide.calendartools;
+
+import com.firstadie.csftcarroll.b00641329.firstaide.Event;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,6 +73,7 @@ public class CalendarEvent extends Event {
             jsonObject.put("start_time", mStartTime);
             jsonObject.put("end_time", mEndTime);
             jsonObject.put("event_location", mEventLocation);
+            jsonObject.put("duration", getDuration());
         } catch (JSONException e) {
             // Do nothing
             e.printStackTrace();
