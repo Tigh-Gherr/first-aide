@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class CalendarUtils {
-    public static int calculateTimeDifference(long startTime, long endTime, TimeUnit fromUnit, TimeUnit toUnit) {
-        return (int) toUnit.convert(endTime - startTime, fromUnit);
+    public static int calculateDifferenceInMinutes(long startTime, long endTime) {
+        return (int) TimeUnit.MINUTES.convert(endTime - startTime, TimeUnit.MILLISECONDS);
     }
 
     public static long getDayBracketInMillis(boolean dayStart) {

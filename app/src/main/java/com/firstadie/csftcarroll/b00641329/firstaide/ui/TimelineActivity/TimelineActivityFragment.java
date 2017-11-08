@@ -9,7 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.ActivityCalculator;
+import com.firstadie.csftcarroll.b00641329.firstaide.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.TimelinePlanner;
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
@@ -44,7 +45,16 @@ public class TimelineActivityFragment extends Fragment {
 
         Log.d(getClass().getSimpleName(), array.toString());
 
-        ActivityCalculator.fillList(getActivity(), mCalendarEvents);
+        //TimelinePlanner.fillList(getActivity(), mCalendarEvents);
+
+        TimelinePlanner planner = new TimelinePlanner(mCalendarEvents, mUser.getUserHobbies());
+        List<Event> timelineEvents = planner.planTimeline();
+
+        JSONArray eventArray = new JSONArray();
+        for(Event event : timelineEvents) {
+            eventArray.put(event.toJSONObject());
+        }
+        Log.d(getClass().getSimpleName(), eventArray.toString());
     }
 
     @Override
