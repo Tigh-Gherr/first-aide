@@ -85,11 +85,16 @@ public class LoginActivityFragment extends Fragment {
         task.setOnPostCompleteListener(new OnPostCompleteListener() {
             @Override
             public void onPostComplete(String result) throws JSONException {
-                if(result != null) {
-                    Log.i(getClass().getSimpleName(), result);
-                } else {
-                    Log.i(getClass().getSimpleName(), "Result is null");
+                if(result == null) {
+                    Snackbar.make(
+                            getView(),
+                            "An error occured. Login returned no result",
+                            Snackbar.LENGTH_SHORT).show();
+
+                    return;
                 }
+
+                Log.i(getClass().getSimpleName(), "Result is null");
 
                 mSignInProgressBar.animate().setDuration(50).alpha(0);
                 mSignInProgressBar.setVisibility(View.INVISIBLE);
@@ -117,7 +122,7 @@ public class LoginActivityFragment extends Fragment {
             }
         });
 
-        dialog.show(getActivity().getSupportFragmentManager(), "NEWUSER");
+        dialog.show(getActivity().getSupportFragmentManager(), CreateAccountDialog.KEY_FRAGMENT);
     }
 
     @Override
@@ -169,7 +174,6 @@ public class LoginActivityFragment extends Fragment {
         });
 
         mSignInProgressBar = view.findViewById(R.id.progressbar_signIn);
-
     }
 
     @Override

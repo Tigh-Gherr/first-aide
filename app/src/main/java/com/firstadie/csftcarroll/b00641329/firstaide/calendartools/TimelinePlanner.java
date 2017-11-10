@@ -1,13 +1,9 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.calendartools;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.firstadie.csftcarroll.b00641329.firstaide.Event;
-import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.CalendarEvent;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.UserHobby;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.CalendarUtils;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,10 +15,10 @@ import java.util.List;
 
 public class TimelinePlanner {
 
-    private List<CalendarEvent> mCalendarEvents;
+    private List<Event> mCalendarEvents;
     private List<UserHobby> mUserHobbies;
 
-    public TimelinePlanner(List<CalendarEvent> calendarEvents, List<UserHobby> userHobbies) {
+    public TimelinePlanner(List<Event> calendarEvents, List<UserHobby> userHobbies) {
         mCalendarEvents = calendarEvents;
         mUserHobbies = userHobbies;
     }
@@ -30,7 +26,8 @@ public class TimelinePlanner {
     public List<Event> planTimeline() {
         List<Event> timelineEvents = new ArrayList<>();
         long previousEndTime = CalendarUtils.getDayBracketInMillis(true);
-        for(CalendarEvent event : mCalendarEvents) {
+
+        for(Event event : mCalendarEvents) {
             bridgeEvents(event, previousEndTime, timelineEvents);
             timelineEvents.add(event);
             previousEndTime = event.getEndTime();
@@ -45,7 +42,7 @@ public class TimelinePlanner {
         return timelineEvents;
     }
 
-    private void bridgeEvents(CalendarEvent event, long previousEndTime, List<Event> timelineEvents) {
+    private void bridgeEvents(Event event, long previousEndTime, List<Event> timelineEvents) {
         int freeTime = CalendarUtils
                 .calculateDifferenceInMinutes(previousEndTime, event.getStartTime());
 

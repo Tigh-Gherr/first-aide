@@ -8,6 +8,9 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
 
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.CalendarEvent;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.RightNow;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.CalendarUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
 
@@ -45,8 +48,8 @@ public class CalendarHelper {
 
     }
 
-    public List<CalendarEvent> getCalendarEvents() {
-        List<CalendarEvent> calendarEvents = new ArrayList<>();
+    public List<Event> getCalendarEvents() {
+        List<Event> calendarEvents = new ArrayList<>();
 
         Cursor cursor = createCursor();
         while (cursor.moveToNext()) {
@@ -57,15 +60,24 @@ public class CalendarHelper {
             long endDate = cursor.getLong(4);
             String eventLocation = cursor.getString(5);
 
-            calendarEvents.add(new CalendarEvent(
+            Event event = new CalendarEvent(
                     calendarId,
                     title,
                     description,
                     startDate,
                     endDate,
                     eventLocation
-                )
             );
+
+            long previousTime = calendarEvents.size() > 0 ?
+                    calendarEvents.get(calendarEvents.size() - 1).getEndTime() :
+                    CalendarUtils.getDayBracketInMillis(true);
+            long currentTime = System.currentTimeMillis();
+            if (previousTime < currentTime && currentTime < event.getStartTime()) {
+                calendarEvents.add(new RightNow(currentTime));
+            }
+
+            calendarEvents.add(event);
         }
 
         return calendarEvents;

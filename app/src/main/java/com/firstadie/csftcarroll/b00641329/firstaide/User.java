@@ -1,6 +1,6 @@
 package com.firstadie.csftcarroll.b00641329.firstaide;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.UserHobby;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.UserHobby;
 
 import org.json.JSONArray;
 import org.json.JSONException;

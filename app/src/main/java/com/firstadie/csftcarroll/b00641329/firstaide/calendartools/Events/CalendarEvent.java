@@ -1,6 +1,4 @@
-package com.firstadie.csftcarroll.b00641329.firstaide.calendartools;
-
-import com.firstadie.csftcarroll.b00641329.firstaide.Event;
+package com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,31 +14,17 @@ public class CalendarEvent extends Event {
 
     private int mCalendarId;
     private String mDescription;
-    private long mStartTime;
-    private long mEndTime;
     private String mEventLocation;
 
     public CalendarEvent(int calendarId, String title, String description, long startTime, long endTime, String eventLocation) {
-        super(title, 0);
+        super(title, startTime, endTime);
         mCalendarId = calendarId;
-        mStartTime = startTime;
-        mEndTime = endTime;
         mDescription = description;
         mEventLocation = eventLocation;
-
-        setDuration((int) TimeUnit.MINUTES.convert(mEndTime - mStartTime, TimeUnit.MILLISECONDS));
     }
 
     public int getCalendarId() {
         return mCalendarId;
-    }
-
-    public long getStartTime() {
-        return mStartTime;
-    }
-
-    public long getEndTime() {
-        return mEndTime;
     }
 
     public String getDescription() {
@@ -51,17 +35,9 @@ public class CalendarEvent extends Event {
         return mEventLocation;
     }
 
-    public Date getStartDate() {
-        return new Date(mStartTime);
-    }
-
-    public Date getEndDate() {
-        return new Date(mEndTime);
-    }
-
     @Override
-    public boolean isCalendarEvent() {
-        return true;
+    public int getEventType() {
+        return Event.CALENDAR_EVENT;
     }
 
     public JSONObject toJSONObject() {
@@ -70,8 +46,8 @@ public class CalendarEvent extends Event {
             jsonObject.put("calendar_id", mCalendarId);
             jsonObject.put("title", getTitle());
             jsonObject.put("description", mDescription);
-            jsonObject.put("start_time", mStartTime);
-            jsonObject.put("end_time", mEndTime);
+            jsonObject.put("start_time", getStartTime());
+            jsonObject.put("end_time", getEndTime());
             jsonObject.put("event_location", mEventLocation);
             jsonObject.put("duration", getDuration());
         } catch (JSONException e) {

@@ -37,6 +37,9 @@ import org.json.JSONObject;
 
 public class CreateAccountDialog extends AppCompatDialogFragment {
 
+    public static final String KEY_FRAGMENT =
+            "com.firstaide.csftcarroll.b00641329.firstaide.ui.LoginActivity.CreateAccountDialog";
+
     public static final String KEY_EMAIL =
             "com.firstaide.csftcarroll.b00641329.firstaide.ui.LoginActivity.CreateAccountDialog.EMAIL";
 
@@ -59,7 +62,6 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
     private OnUserConfirmedListener mListener;
 
     public static CreateAccountDialog newInstance(String email, String password) {
-
         Bundle args = new Bundle();
         args.putString(KEY_EMAIL, email);
         args.putString(KEY_PASSWORD, password);
@@ -67,10 +69,6 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
         CreateAccountDialog fragment = new CreateAccountDialog();
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public static CreateAccountDialog newInstance() {
-        return new CreateAccountDialog();
     }
 
     public void setUserConfirmedListener(OnUserConfirmedListener listener) {
@@ -228,7 +226,7 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
                         @Override public void onAnimationRepeat(Animator animator) { }
                     });
 
-            mCreateAccountStatusTextView.setText("Creating Account");
+            mCreateAccountStatusTextView.setText("Creating Account...");
         } else {
             mCreateAccountFormLinearLayout.animate().alpha(1f).setDuration(200)
                     .setListener(new Animator.AnimatorListener() {

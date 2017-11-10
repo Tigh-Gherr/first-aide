@@ -1,6 +1,4 @@
-package com.firstadie.csftcarroll.b00641329.firstaide.calendartools;
-
-import com.firstadie.csftcarroll.b00641329.firstaide.Event;
+package com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,9 +10,11 @@ import org.json.JSONObject;
 public class UserHobby extends Event {
     private int mPriority;
     private int mId;
+    private int mDuration;
 
     public UserHobby(String title, int duration, int priority, int id) {
-        super(title, duration);
+        super(title);
+        mDuration = duration;
         mPriority = priority;
         mId = id;
     }
@@ -28,8 +28,13 @@ public class UserHobby extends Event {
     }
 
     @Override
-    public boolean isCalendarEvent() {
-        return false;
+    public int getDuration() {
+        return mDuration;
+    }
+
+    @Override
+    public int getEventType() {
+        return Event.HOBBY;
     }
 
     @Override
