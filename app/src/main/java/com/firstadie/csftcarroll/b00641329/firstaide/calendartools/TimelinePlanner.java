@@ -1,8 +1,11 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.calendartools;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.CalendarEvent;
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.Event;
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.UserHobby;
+import com.firstadie.csftcarroll.b00641329.firstaide.api.API;
+import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesAPI;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.UserHobby;
+import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.CalendarUtils;
 
 import java.util.ArrayList;
@@ -24,6 +27,8 @@ public class TimelinePlanner {
     }
 
     public List<Event> planTimeline() {
+        API api = new GooglePlacesAPI();
+
         List<Event> timelineEvents = new ArrayList<>();
         long previousEndTime = CalendarUtils.getDayBracketInMillis(true);
 
@@ -31,6 +36,16 @@ public class TimelinePlanner {
             bridgeEvents(event, previousEndTime, timelineEvents);
             timelineEvents.add(event);
             previousEndTime = event.getEndTime();
+
+            if(event instanceof CalendarEvent) {
+                CalendarEvent calendarEvent = (CalendarEvent) event;
+                String origin = LocationSingleton.get().getLatitude() + "," +
+                        LocationSingleton.get().getLongitude();
+                api.addParam("origin", origin);
+                api.addParam("destination", calendarEvent.getEventLocation());
+
+                api.query();
+            }
         }
 
         int freeTime = CalendarUtils.calculateDifferenceInMinutes(

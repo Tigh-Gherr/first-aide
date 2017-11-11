@@ -1,5 +1,8 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 
+import android.content.Context;
+import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -7,7 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineView.TimelineView;
 
@@ -19,10 +22,16 @@ import java.util.List;
 
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.TimelineViewHolder> {
 
+    private Context mContext;
     private List<Event> mEvents;
 
-    public TimeLineAdapter(List<Event> events) {
+    private int mCurrentEventPosition;
+
+    public TimeLineAdapter(Context context, List<Event> events) {
+        mContext = context;
         mEvents = events;
+
+        mCurrentEventPosition = 0;
     }
 
     @Override
@@ -61,18 +70,22 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
                 holder.mCalendarEventIcon.setVisibility(View.INVISIBLE);
                 break;
         }
+
+        if(event.isCurrentEvent()) {
+            holder.mMarkerTimelineView.setMarker(
+                    VectorDrawableCompat.create(
+                            mContext.getResources(),
+                            R.drawable.marker_current_event,
+                            mContext.getTheme()
+                    )
+            );
+
+            mCurrentEventPosition = position;
+        }
     }
 
     public int currentEventPosition() {
-
-        for(int i = 0; i < mEvents.size(); i++) {
-            Event event = mEvents.get(i);
-            if(event.isCurrentEvent()) {
-                return i;
-            }
-        }
-
-        return 0;
+        return mCurrentEventPosition;
     }
 
     public class TimelineViewHolder extends RecyclerView.ViewHolder {

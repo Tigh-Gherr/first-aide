@@ -10,9 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.TimelinePlanner;
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
@@ -41,23 +40,14 @@ public class TimelineActivityFragment extends Fragment {
     private void populateTimeline() {
         mCalendarEvents = mCalendarHelper.getCalendarEvents();
 
-        JSONArray array = new JSONArray();
-        for(Event event : mCalendarEvents) {
-            array.put(event.toJSONObject());
-        }
+        TimelinePlanner planner = new TimelinePlanner(
+                mCalendarEvents,
+                mUser.getUserHobbies()
+        );
 
-        Log.d(getClass().getSimpleName(), array.toString());
-
-        TimelinePlanner planner = new TimelinePlanner(mCalendarEvents, mUser.getUserHobbies());
         List<Event> timelineEvents = planner.planTimeline();
 
-        JSONArray eventArray = new JSONArray();
-        for(Event event : timelineEvents) {
-            eventArray.put(event.toJSONObject());
-        }
-        Log.d(getClass().getSimpleName(), eventArray.toString());
-
-        mTimeLineAdapter = new TimeLineAdapter(timelineEvents);
+        mTimeLineAdapter = new TimeLineAdapter(getActivity(), timelineEvents);
         mTimelineRecyclerView.setAdapter(mTimeLineAdapter);
 
         mTimelineRecyclerView.scrollToPosition(mTimeLineAdapter.currentEventPosition());

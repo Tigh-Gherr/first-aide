@@ -1,4 +1,4 @@
-package com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events;
+package com.firstadie.csftcarroll.b00641329.firstaide.events;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -8,8 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
+import com.firstadie.csftcarroll.b00641329.firstaide.ui.ShakeSenstiiveActivity.ShakeSensitiveAppCompatActivity;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends ShakeSensitiveAppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,5 +19,4 @@ public class TimelineActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
-
 }

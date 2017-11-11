@@ -20,6 +20,8 @@ import com.firstadie.csftcarroll.b00641329.firstaide.OnPostCompleteListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.OnUserConfirmedListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
+import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationHelper;
+import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity;
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
@@ -174,6 +176,8 @@ public class LoginActivityFragment extends Fragment {
         });
 
         mSignInProgressBar = view.findViewById(R.id.progressbar_signIn);
+
+        LocationSingleton.get().setLocationHelper(new LocationHelper(getActivity()));
     }
 
     @Override

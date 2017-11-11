@@ -11,10 +11,6 @@ import android.widget.Toast;
 
 public class LoginUtils {
     public static boolean isValidEmail(String email) {
-        boolean ise = TextUtils.isEmpty(email);
-        boolean mat = Patterns.EMAIL_ADDRESS.matcher(email).matches();
-
-        Log.i("LoginUtilsMate", "ise: " + ise + "      mat: " + mat);
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 

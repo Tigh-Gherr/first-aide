@@ -49,7 +49,7 @@ public class TimelineView extends View {
         typedArray.recycle();
 
         if(mMarker == null) {
-            mMarker = mContext.getResources().getDrawable(R.drawable.marker);
+            mMarker = mContext.getResources().getDrawable(R.drawable.marker_event);
         }
 
         if(mStartLine == null && mEndLine == null) {
@@ -153,9 +153,9 @@ public class TimelineView extends View {
     }
 
     /**
-     * Sets marker.
+     * Sets marker_event.
      *
-     * @param marker will set marker drawable to timeline
+     * @param marker will set marker_event drawable to timeline
      */
     public void setMarker(Drawable marker) {
         mMarker = marker;
@@ -163,9 +163,9 @@ public class TimelineView extends View {
     }
 
     /**
-     * Sets marker.
+     * Sets marker_event.
      *
-     * @param marker will set marker drawable to timeline
+     * @param marker will set marker_event drawable to timeline
      * @param color  with a color
      */
     public void setMarker(Drawable marker, int color) {
@@ -175,7 +175,7 @@ public class TimelineView extends View {
     }
 
     /**
-     * Sets marker color.
+     * Sets marker_event color.
      *
      * @param color the color
      */
@@ -207,9 +207,9 @@ public class TimelineView extends View {
     }
 
     /**
-     * Sets marker size.
+     * Sets marker_event size.
      *
-     * @param markerSize the marker size
+     * @param markerSize the marker_event size
      */
     public void setMarkerSize(int markerSize) {
         mMarkerSize = markerSize;

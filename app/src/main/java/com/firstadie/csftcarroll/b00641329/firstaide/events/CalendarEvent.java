@@ -1,10 +1,7 @@
-package com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events;
+package com.firstadie.csftcarroll.b00641329.firstaide.events;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by tigh on 07/11/17.

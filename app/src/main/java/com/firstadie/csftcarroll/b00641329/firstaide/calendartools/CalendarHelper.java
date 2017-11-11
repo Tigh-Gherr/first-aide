@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.provider.CalendarContract;
 import android.util.Log;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.CalendarEvent;
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.Event;
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.Events.RightNow;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.RightNow;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.CalendarUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
 
@@ -51,14 +51,58 @@ public class CalendarHelper {
     public List<Event> getCalendarEvents() {
         List<Event> calendarEvents = new ArrayList<>();
 
-        Cursor cursor = createCursor();
+        List<String> calendarIds = getCalendars();
+        for (String id : calendarIds) {
+            parseCalendar(id, calendarEvents);
+        }
+
+        return calendarEvents;
+    }
+
+    @SuppressLint("MissingPermission")
+    private List<String> getCalendars() {
+        Cursor cursor = mContext.getContentResolver().query(
+                CalendarContract.Calendars.CONTENT_URI,
+                mCalendarFields,
+                null,
+                null,
+                null
+        );
+
+        List<String> calendarIds = new ArrayList<>();
         while (cursor.moveToNext()) {
-            int calendarId = cursor.getInt(0);
-            String title = cursor.getString(1);
-            String description = cursor.getString(2);
-            long startDate = cursor.getLong(3);
-            long endDate = cursor.getLong(4);
-            String eventLocation = cursor.getString(5);
+            String id = cursor.getString(0);
+            String displayName = cursor.getString(1);
+
+            if (LoginUtils.isValidEmail(displayName)) {
+                calendarIds.add(id);
+            }
+        }
+
+        return calendarIds;
+    }
+
+    private void parseCalendar(String id, List<Event> calendarEvents) {
+        Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
+
+        ContentUris.appendId(builder, CalendarUtils.getDayBracketInMillis(true));
+        ContentUris.appendId(builder, CalendarUtils.getDayBracketInMillis(false));
+
+        Cursor eventCursor = mContext.getContentResolver().query(
+                builder.build(),
+                mEventFields,
+                EVENT_QUERY,
+                new String[]{id},
+                CalendarContract.Instances.BEGIN
+        );
+
+        while (eventCursor.moveToNext()) {
+            int calendarId = eventCursor.getInt(0);
+            String title = eventCursor.getString(1);
+            String description = eventCursor.getString(2);
+            long startDate = eventCursor.getLong(3);
+            long endDate = eventCursor.getLong(4);
+            String eventLocation = eventCursor.getString(5);
 
             Event event = new CalendarEvent(
                     calendarId,
@@ -80,48 +124,6 @@ public class CalendarHelper {
             calendarEvents.add(event);
         }
 
-        return calendarEvents;
-    }
-
-    @SuppressLint("MissingPermission")
-    private Cursor createCursor() {
-        Cursor cursor = mContext.getContentResolver().query(
-                CalendarContract.Calendars.CONTENT_URI,
-                mCalendarFields,
-                null,
-                null,
-                null
-        );
-
-        String[] calendarId = null;
-
-        while (calendarId == null && cursor.moveToNext()) {
-            String id = cursor.getString(0);
-            String displayName = cursor.getString(1);
-
-            String message = id + " " + displayName;
-            Log.d(getClass().getSimpleName(), message);
-
-            if (LoginUtils.isValidEmail(displayName)) {
-                calendarId = new String[]{
-                        cursor.getString(0)
-                };
-            }
-        }
-
-
-        Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
-
-        ContentUris.appendId(builder, CalendarUtils.getDayBracketInMillis(true));
-        ContentUris.appendId(builder, CalendarUtils.getDayBracketInMillis(false));
-
-        return mContext.getContentResolver().query(
-                builder.build(),
-                mEventFields,
-                EVENT_QUERY,
-                calendarId,
-                CalendarContract.Instances.BEGIN
-        );
     }
 
 }
