@@ -19,9 +19,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.OnPostCompleteListener;
+import com.firstadie.csftcarroll.b00641329.firstaide.OnEndpointQueryCompleteListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.OnUserConfirmedListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
@@ -148,9 +147,9 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
             }
 
             PostAsyncTask task = new PostAsyncTask();
-            task.setOnPostCompleteListener(new OnPostCompleteListener() {
+            task.setOnPostCompleteListener(new OnEndpointQueryCompleteListener() {
                 @Override
-                public void onPostComplete(String result) throws JSONException {
+                public void onQueryComplete(String result) throws JSONException {
                     Log.d(CreateAccountDialog.class.getSimpleName(), result);
                     JSONObject jsonResult = new JSONObject(result);
 

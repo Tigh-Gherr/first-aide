@@ -16,7 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.OnPostCompleteListener;
+import com.firstadie.csftcarroll.b00641329.firstaide.OnEndpointQueryCompleteListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.OnUserConfirmedListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
@@ -84,9 +84,9 @@ public class LoginActivityFragment extends Fragment {
 
 
         PostAsyncTask task = new PostAsyncTask();
-        task.setOnPostCompleteListener(new OnPostCompleteListener() {
+        task.setOnPostCompleteListener(new OnEndpointQueryCompleteListener() {
             @Override
-            public void onPostComplete(String result) throws JSONException {
+            public void onQueryComplete(String result) throws JSONException {
                 if(result == null) {
                     Snackbar.make(
                             getView(),

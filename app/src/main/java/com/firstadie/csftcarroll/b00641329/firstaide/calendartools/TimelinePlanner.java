@@ -44,7 +44,7 @@ public class TimelinePlanner {
                 api.addParam("origin", origin);
                 api.addParam("destination", calendarEvent.getEventLocation());
 
-                api.query();
+                //api.query();
             }
         }
 

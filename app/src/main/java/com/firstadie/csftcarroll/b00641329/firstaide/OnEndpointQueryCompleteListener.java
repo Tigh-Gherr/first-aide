@@ -6,6 +6,6 @@ import org.json.JSONException;
  * Created by tigh on 03/11/17.
  */
 
-public interface OnPostCompleteListener {
-    void onPostComplete(String result) throws JSONException;
+public interface OnEndpointQueryCompleteListener {
+    void onQueryComplete(String result) throws JSONException;
 }

@@ -18,9 +18,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class PostAsyncTask extends AsyncTask<String, Void, String> {
 
-    private OnPostCompleteListener mListener;
+    private OnEndpointQueryCompleteListener mListener;
 
-    public void setOnPostCompleteListener(OnPostCompleteListener listener) {
+    public void setOnPostCompleteListener(OnEndpointQueryCompleteListener listener) {
         mListener = listener;
     }
 
@@ -70,7 +70,7 @@ public class PostAsyncTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         if (mListener != null) {
             try {
-                mListener.onPostComplete(s);
+                mListener.onQueryComplete(s);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

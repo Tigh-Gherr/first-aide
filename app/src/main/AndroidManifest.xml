@@ -3,12 +3,12 @@
           package="com.firstadie.csftcarroll.b00641329.firstaide">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-
     <uses-permission android:name="android.permission.READ_CALENDAR"/>
     <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -29,10 +29,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:parentActivityName=".ui.LoginActivity.LoginActivity"
             android:name=".ui.TimelineActivity.TimelineActivity"
             android:label="@string/title_activity_timeline"
+            android:launchMode="singleTask"
+            android:parentActivityName=".ui.LoginActivity.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".ui.WeatherActivity.WeatherActivity"
+            android:label="@string/title_activity_weather"
+            android:launchMode="singleTop"
+            android:parentActivityName=".ui.TimelineActivity.TimelineActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity"/>
         </activity>
     </application>
 

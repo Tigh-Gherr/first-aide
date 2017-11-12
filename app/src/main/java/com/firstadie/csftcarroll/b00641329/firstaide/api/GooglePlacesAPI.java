@@ -1,5 +1,7 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.api;
 
+import org.json.JSONException;
+
 /**
  * Created by tigh on 10/11/17.
  */
@@ -9,10 +11,10 @@ public class GooglePlacesAPI extends API {
     public GooglePlacesAPI() {
         super();
 
-        mHashSet.add("key");
-        mHashSet.add("origin");
-        mHashSet.add("destination");
-        mHashSet.add("metric");
+        mAllowedParams.add("key");
+        mAllowedParams.add("origin");
+        mAllowedParams.add("destination");
+        mAllowedParams.add("metric");
 
         addParam("key", getAPIKey());
         addParam("metric", "imperial");
@@ -26,5 +28,10 @@ public class GooglePlacesAPI extends API {
     @Override
     public String getAPIKey() {
         return "AIzaSyDuBMdzkh1GPGZflagG5J2oq89lwMt--JY";
+    }
+
+    @Override
+    public Object parse(String results) throws JSONException {
+        return null;
     }
 }
