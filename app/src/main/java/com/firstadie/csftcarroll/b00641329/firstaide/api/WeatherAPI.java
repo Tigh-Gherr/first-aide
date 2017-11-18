@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Created by tigh on 10/11/17.
  */
 
-public class WeatherAPI extends API {
+public class WeatherAPI extends API<Weather> {
 
     public WeatherAPI() {
         super();
@@ -41,10 +41,8 @@ public class WeatherAPI extends API {
 
         JSONObject tempJson = resultJson.getJSONObject("main");
         double temp = tempJson.getDouble("temp");
-        double minTemp = tempJson.getDouble("temp_min");
-        double maxTemp = tempJson.getDouble("temp_max");
 
-        return new Weather(description, iconCode, temp, minTemp, maxTemp);
+        return new Weather(description, iconCode, temp);
     }
 
 }

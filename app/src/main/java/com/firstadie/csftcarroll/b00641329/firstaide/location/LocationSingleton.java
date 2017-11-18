@@ -32,4 +32,10 @@ public class LocationSingleton {
     public double getLongitude() {
         return mLocationHelper.getLongitude();
     }
+
+    public static String getFormattedLatLng() {
+        String latlng = get().getLatitude() + "," + get().getLongitude();
+
+        return latlng;
+    }
 }

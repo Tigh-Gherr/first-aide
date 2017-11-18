@@ -45,6 +45,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity"/>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAJa2t-fOIe3OBixnFC412EnRKGUg_2yzM" />
+
     </application>
 
 </manifest>

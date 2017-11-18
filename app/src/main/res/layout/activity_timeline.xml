@@ -1,34 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/panellayout_timeline"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity">
+    android:gravity="bottom"
+    sothree:umanoPanelHeight="68dp"
+    sothree:umanoShadowHeight="4dp">
 
-    <android.support.design.widget.AppBarLayout
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        tools:context="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/fragment"
-              android:name="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivityFragment"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              app:layout_behavior="@string/appbar_scrolling_view_behavior"
-              tools:layout="@layout/fragment_timeline"/>
+        </android.support.design.widget.AppBarLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+        <fragment
+            android:id="@+id/fragment_timeline"
+            android:name="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivityFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:layout="@layout/fragment_timeline"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_calendarEventDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

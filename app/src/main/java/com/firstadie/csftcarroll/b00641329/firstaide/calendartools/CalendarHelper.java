@@ -6,7 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.CalendarContract;
-import android.util.Log;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
@@ -48,6 +47,40 @@ public class CalendarHelper {
 
     }
 
+    public List<Event> getCalendarEventsWithRightNow() {
+        List<Event> calendarEvents = new ArrayList<>();
+
+        List<String> calendarIds = getCalendars();
+        for (String id : calendarIds) {
+            parseCalendar(id, calendarEvents);
+        }
+
+        findRightNow(calendarEvents);
+
+        return calendarEvents;
+    }
+
+    private void findRightNow(List<Event> calendarEvents) {
+        long previousTime = calendarEvents.size() > 0 ?
+                calendarEvents.get(0).getEndTime() :
+                CalendarUtils.getDayBracketInMillis(true);
+
+        long currentTime = System.currentTimeMillis();
+
+        boolean rightNowSet = false;
+        for(Event e : calendarEvents) {
+            if(previousTime < currentTime && currentTime < e.getStartTime()) {
+                calendarEvents.add(new RightNow(currentTime));
+                rightNowSet = true;
+                break;
+            }
+        }
+
+        if(!rightNowSet) {
+            calendarEvents.add(new RightNow(currentTime));
+        }
+    }
+
     public List<Event> getCalendarEvents() {
         List<Event> calendarEvents = new ArrayList<>();
 
@@ -78,6 +111,8 @@ public class CalendarHelper {
                 calendarIds.add(id);
             }
         }
+
+        cursor.close();
 
         return calendarIds;
     }
@@ -113,17 +148,10 @@ public class CalendarHelper {
                     eventLocation
             );
 
-            long previousTime = calendarEvents.size() > 0 ?
-                    calendarEvents.get(calendarEvents.size() - 1).getEndTime() :
-                    CalendarUtils.getDayBracketInMillis(true);
-            long currentTime = System.currentTimeMillis();
-            if (previousTime < currentTime && currentTime < event.getStartTime()) {
-                calendarEvents.add(new RightNow(currentTime));
-            }
-
             calendarEvents.add(event);
         }
 
+        eventCursor.close();
     }
 
 }

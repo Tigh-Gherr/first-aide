@@ -3,11 +3,17 @@ package com.firstadie.csftcarroll.b00641329.firstaide.events;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by tigh on 07/11/17.
  */
 
-public class CalendarEvent extends Event {
+public class CalendarEvent extends Event implements Serializable {
+
+    public static final String JSON_KEY_CALENDAR_ID = "calendar_id";
+    public static final String JSON_KEY_DESCRIPTION = "description";
+    public static final String JSON_KEY_EVENT_LOCATION = "event_location";
 
     private int mCalendarId;
     private String mDescription;
@@ -40,13 +46,13 @@ public class CalendarEvent extends Event {
     public JSONObject toJSONObject() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("calendar_id", mCalendarId);
-            jsonObject.put("title", getTitle());
-            jsonObject.put("description", mDescription);
-            jsonObject.put("start_time", getStartTime());
-            jsonObject.put("end_time", getEndTime());
-            jsonObject.put("event_location", mEventLocation);
-            jsonObject.put("duration", getDuration());
+            jsonObject.put(JSON_KEY_CALENDAR_ID, mCalendarId);
+            jsonObject.put(JSON_KEY_TITLE, getTitle());
+            jsonObject.put(JSON_KEY_DESCRIPTION, mDescription);
+            jsonObject.put(JSON_KEY_START_TIME, getStartTime());
+            jsonObject.put(JSON_KEY_END_TIME, getEndTime());
+            jsonObject.put(JSON_KEY_EVENT_LOCATION, mEventLocation);
+            jsonObject.put(JSON_KEY_DURATION, getDuration());
         } catch (JSONException e) {
             // Do nothing
             e.printStackTrace();

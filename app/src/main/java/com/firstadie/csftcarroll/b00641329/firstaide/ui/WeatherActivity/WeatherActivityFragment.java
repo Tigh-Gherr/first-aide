@@ -37,7 +37,6 @@ public class WeatherActivityFragment extends Fragment {
     private CollapsingToolbarLayout mCollapsingToolbarLayout;
 
     private AppCompatTextView mTemperatureTextView;
-    private AppCompatTextView mMinimumTemperatureTextView;
     private AppCompatImageView mWeatherIconImageView;
     private AppCompatTextView mDescriptionTextView;
 
@@ -62,7 +61,6 @@ public class WeatherActivityFragment extends Fragment {
         mCollapsingToolbarLayout.setCollapsedTitleTextColor(Color.rgb(255, 255, 255));
 
         mTemperatureTextView = view.findViewById(R.id.textview_temperature);
-        mMinimumTemperatureTextView = view.findViewById(R.id.textview_minimumTemperature);
         mWeatherIconImageView = view.findViewById(R.id.imageview_weatherIcon);
         mDescriptionTextView = view.findViewById(R.id.textview_weatherDescription);
 
@@ -90,7 +88,6 @@ public class WeatherActivityFragment extends Fragment {
     private void displayWeather(Weather weather) {
         mTemperatureTextView.setText(TextLayoutUtils.formatTemperature(weather.getTemperature()));
         mWeatherIconImageView.setImageResource(weather.getWeatherIcon());
-        mMinimumTemperatureTextView.setText(TextLayoutUtils.formatTemperature(weather.getMinimumTemperature()));
         mDescriptionTextView.setText(weather.getDescription());
 
         mClothingRecyclerViewAdapter = new ClothingRecyclerViewAdapter(

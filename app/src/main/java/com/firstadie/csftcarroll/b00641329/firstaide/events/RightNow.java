@@ -23,10 +23,10 @@ public class RightNow extends Event {
         JSONObject jsonObject = new JSONObject();
 
         try {
-            jsonObject.put("Title", getTitle());
-            jsonObject.put("Start time", getStartTime());
-            jsonObject.put("End time", getEndTime());
-            jsonObject.put("Duration", getDuration());
+            jsonObject.put(JSON_KEY_TITLE, getTitle());
+            jsonObject.put(JSON_KEY_START_TIME, getStartTime());
+            jsonObject.put(JSON_KEY_END_TIME, getEndTime());
+            jsonObject.put(JSON_KEY_DURATION, getDuration());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -35,6 +35,6 @@ public class RightNow extends Event {
 
     @Override
     public String toJSONString() {
-        return null;
+        return toJSONObject().toString();
     }
 }

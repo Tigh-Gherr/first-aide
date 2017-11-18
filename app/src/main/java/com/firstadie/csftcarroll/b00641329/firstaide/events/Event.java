@@ -2,13 +2,21 @@ package com.firstadie.csftcarroll.b00641329.firstaide.events;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.CalendarUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.Serializable;
 
 /**
  * Created by tigh on 03/11/17.
  */
 
-public abstract class Event {
+public abstract class Event implements Serializable {
+
+    public static final String JSON_KEY_TITLE = "title";
+    public static final String JSON_KEY_START_TIME = "start_time";
+    public static final String JSON_KEY_END_TIME = "end_time";
+    public static final String JSON_KEY_DURATION = "duration";
 
     public static final int RIGHT_NOW = -1;
     public static final int HOBBY = 0;

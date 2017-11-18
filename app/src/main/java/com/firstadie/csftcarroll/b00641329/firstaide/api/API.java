@@ -45,6 +45,8 @@ public abstract class API<T> {
     public void query() {
         String url = buildEndpoint();
 
+        Log.d(getClass().getSimpleName(), url);
+
         APIAsyncTask asyncTask = new APIAsyncTask();
         asyncTask.execute(url);
     }

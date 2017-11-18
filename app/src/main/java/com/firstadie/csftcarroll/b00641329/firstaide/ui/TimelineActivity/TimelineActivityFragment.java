@@ -3,6 +3,7 @@ package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,7 +39,7 @@ public class TimelineActivityFragment extends Fragment {
     }
 
     private void populateTimeline() {
-        mCalendarEvents = mCalendarHelper.getCalendarEvents();
+        mCalendarEvents = mCalendarHelper.getCalendarEventsWithRightNow();
 
         TimelinePlanner planner = new TimelinePlanner(
                 mCalendarEvents,
@@ -72,6 +73,10 @@ public class TimelineActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if(mUser == null) {
+            NavUtils.navigateUpFromSameTask(getActivity());
+            return;
+        }
         populateTimeline();
     }
 }

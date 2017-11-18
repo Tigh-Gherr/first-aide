@@ -63,6 +63,8 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
             case Event.HOBBY:
                 holder.mCalendarEventIcon.setVisibility(View.INVISIBLE);
                 break;
+            case Event.RIGHT_NOW:
+                holder.mCalendarEventIcon.setVisibility(View.INVISIBLE);
         }
 
         if(event.isCurrentEvent()) {

@@ -12,15 +12,11 @@ public class Weather {
     private String mWeatherCode;
 
     private double mTemperature;
-    private double mMinimumTemperature;
-    private double mMaximumTemperature;
 
-    public Weather(String description, String weatherCode, double temperature, double minimumTemperature, double maximumTemperature) {
+    public Weather(String description, String weatherCode, double temperature) {
         mDescription = description;
         mWeatherCode = weatherCode;
         mTemperature = temperature;
-        mMinimumTemperature = minimumTemperature;
-        mMaximumTemperature = maximumTemperature;
     }
 
     public double getTemperature() {
@@ -33,14 +29,6 @@ public class Weather {
 
     public String getWeatherCode() {
         return mWeatherCode;
-    }
-
-    public double getMinimumTemperature() {
-        return mMinimumTemperature;
-    }
-
-    public double getMaximumTemperature() {
-        return mMaximumTemperature;
     }
 
     public int getWeatherIcon() {

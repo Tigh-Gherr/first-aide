@@ -1,6 +1,8 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.utils;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by tigh on 12/11/17.
@@ -29,5 +31,27 @@ public class TextLayoutUtils {
         }
 
         return builder.toString().trim();
+    }
+
+    public static String epochToTime(long epoch) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mma");
+        Date date = new Date(epoch);
+
+        return simpleDateFormat.format(date);
+    }
+
+    public static String kilometersToMiles(int km) {
+        DecimalFormat df = new DecimalFormat("0.#");
+
+        double distance = 0.000621 * km;
+        return df.format(distance) + " miles";
+    }
+
+    public static String secondsToTime(int s) {
+        if(s >= 60 * 60) {
+            return "";
+        } else {
+            return (s % 60) + " minutes";
+        }
     }
 }
