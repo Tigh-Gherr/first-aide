@@ -3,6 +3,7 @@ package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 import android.content.Context;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +21,22 @@ import java.util.List;
 
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.TimelineViewHolder> {
 
+    public interface OnCalendarEventTouchListener {
+        void onCalendarEventTouched(Event event);
+    }
+
     private Context mContext;
     private List<Event> mEvents;
+
+    private OnCalendarEventTouchListener mOnCalendarEventTouchListener;
 
     public TimeLineAdapter(Context context, List<Event> events) {
         mContext = context;
         mEvents = events;
+    }
+
+    public void setOnCalendarEventTouchListener(OnCalendarEventTouchListener onCalendarEventTouchListener) {
+        mOnCalendarEventTouchListener = onCalendarEventTouchListener;
     }
 
     @Override
@@ -48,7 +59,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
 
     @Override
     public void onBindViewHolder(TimelineViewHolder holder, int position) {
-        Event event = mEvents.get(position);
+        final Event event = mEvents.get(position);
 
         String title = event.getTitle();
         int duration = event.getDuration();
@@ -59,6 +70,12 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
         switch (event.getEventType()) {
             case Event.CALENDAR_EVENT:
                 holder.mCalendarEventIcon.setVisibility(View.VISIBLE);
+                holder.mEventCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mOnCalendarEventTouchListener.onCalendarEventTouched(event);
+                    }
+                });
                 break;
             case Event.HOBBY:
                 holder.mCalendarEventIcon.setVisibility(View.INVISIBLE);
@@ -88,7 +105,20 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
         return 0;
     }
 
+    public int getPositionOfEvent(Event event) {
+        for(int i = 0; i < mEvents.size(); i++) {
+            Event current = mEvents.get(i);
+
+            if(event.getId() == current.getId()) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     public class TimelineViewHolder extends RecyclerView.ViewHolder {
+        CardView mEventCardView;
         TimelineView mMarkerTimelineView;
         AppCompatTextView mTitleTextView;
         AppCompatTextView mDurationTextView;
@@ -97,6 +127,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
         public TimelineViewHolder(View itemView) {
             super(itemView);
 
+            mEventCardView = itemView.findViewById(R.id.cardview_eventCard);
             mMarkerTimelineView = itemView.findViewById(R.id.timelineview_marker);
             mTitleTextView = itemView.findViewById(R.id.textview_eventTitle);
             mDurationTextView = itemView.findViewById(R.id.textview_eventDuration);

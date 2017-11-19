@@ -34,6 +34,11 @@ public class RightNow extends Event {
     }
 
     @Override
+    public int getId() {
+        return -1;
+    }
+
+    @Override
     public String toJSONString() {
         return toJSONObject().toString();
     }

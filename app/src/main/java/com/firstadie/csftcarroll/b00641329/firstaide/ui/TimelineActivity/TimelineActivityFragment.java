@@ -1,31 +1,29 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
-import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.TimelinePlanner;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.CalendarHelper;
-
-import org.json.JSONArray;
+import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.TimelinePlanner;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
 
 import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class TimelineActivityFragment extends Fragment {
+public class TimelineActivityFragment extends Fragment implements AccessibleFragment<Event> {
 
     private User mUser;
 
@@ -34,6 +32,8 @@ public class TimelineActivityFragment extends Fragment {
 
     private RecyclerView mTimelineRecyclerView;
     private TimeLineAdapter mTimeLineAdapter;
+
+    private AccessibleActivity<Event> mAccessibleActivity;
 
     public TimelineActivityFragment() {
     }
@@ -49,6 +49,13 @@ public class TimelineActivityFragment extends Fragment {
         List<Event> timelineEvents = planner.planTimeline();
 
         mTimeLineAdapter = new TimeLineAdapter(getActivity(), timelineEvents);
+        mTimeLineAdapter.setOnCalendarEventTouchListener(new TimeLineAdapter.OnCalendarEventTouchListener() {
+            @Override
+            public void onCalendarEventTouched(Event event) {
+                mAccessibleActivity.sendData(event);
+            }
+        });
+
         mTimelineRecyclerView.setAdapter(mTimeLineAdapter);
 
         mTimelineRecyclerView.scrollToPosition(mTimeLineAdapter.currentEventPosition());
@@ -71,6 +78,13 @@ public class TimelineActivityFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        mAccessibleActivity = (AccessibleActivity) context;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if(mUser == null) {
@@ -78,5 +92,14 @@ public class TimelineActivityFragment extends Fragment {
             return;
         }
         populateTimeline();
+    }
+
+    @Override
+    public void sendData(Event data) {
+        int pos = mTimeLineAdapter.getPositionOfEvent(data);
+        if(pos != -1) {
+            LinearLayoutManager llm = (LinearLayoutManager) mTimelineRecyclerView.getLayoutManager();
+            llm.scrollToPositionWithOffset(pos, 0);
+        }
     }
 }

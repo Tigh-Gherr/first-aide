@@ -35,7 +35,8 @@ import org.json.JSONException;
 
 import java.io.Serializable;
 
-public class EventDetailFragment extends Fragment {
+public class EventDetailFragment extends Fragment
+        implements AccessibleFragment<Float> {
 
     private CalendarEvent mCalendarEvent;
     private GooglePlace mGooglePlace;
@@ -73,7 +74,7 @@ public class EventDetailFragment extends Fragment {
         mEventMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
-                MapsInitializer.initialize(getView().getContext().getApplicationContext());
+                MapsInitializer.initialize(getActivity().getApplicationContext());
                 googleMap.addMarker(new MarkerOptions().position(mGooglePlace.getLatLng()));
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(mGooglePlace.getLatLng()));
             }
@@ -196,4 +197,8 @@ public class EventDetailFragment extends Fragment {
         initGooglePlaces();
     }
 
+    @Override
+    public void sendData(Float data) {
+        adjustPanelForOffset(data);
+    }
 }

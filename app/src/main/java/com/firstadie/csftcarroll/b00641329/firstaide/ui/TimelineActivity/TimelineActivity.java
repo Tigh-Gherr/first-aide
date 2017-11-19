@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
@@ -23,7 +24,8 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.List;
 
-public class TimelineActivity extends AppCompatActivity implements SensorEventListener, OnArrowPressedListener {
+public class TimelineActivity extends AppCompatActivity
+        implements SensorEventListener, OnArrowPressedListener, AccessibleActivity<Event> {
 
     private static float SHAKE_THRESHOLD_GRAVITY = 2.3f;
 
@@ -31,25 +33,29 @@ public class TimelineActivity extends AppCompatActivity implements SensorEventLi
     private SensorManager mSensorManager;
     private long mLastTimeRegistered;
 
+    private List<Event> mCalendarEvents;
+
     private Vibrator mVibrator;
 
     private SlidingUpPanelLayout mTimelinePanelLayout;
     private ViewPager mCalendarEventViewPager;
 
+    private AccessibleFragment<Event> mTimelineAccessibleFragment;
+
     private void initViewPager() {
         CalendarHelper helper = new CalendarHelper(TimelineActivity.this);
-        final List<Event> events = helper.getCalendarEvents();
+        mCalendarEvents = helper.getCalendarEvents();
 
         FragmentManager fm = getSupportFragmentManager();
-        final FragmentAccessibleStatePagerAdapter adapter = new FragmentAccessibleStatePagerAdapter(fm) {
+        final AccessibleFragmentStatePagerAdapter adapter = new AccessibleFragmentStatePagerAdapter(fm) {
             @Override
             public Fragment getItem(int position) {
-                return EventDetailFragment.newInstance(events.get(position));
+                return EventDetailFragment.newInstance(mCalendarEvents.get(position));
             }
 
             @Override
             public int getCount() {
-                return events != null ? events.size() : 0;
+                return mCalendarEvents != null ? mCalendarEvents.size() : 0;
             }
         };
 
@@ -61,28 +67,30 @@ public class TimelineActivity extends AppCompatActivity implements SensorEventLi
                 position = mCalendarEventViewPager.getCurrentItem();
 
                 float panelOffset = mTimelinePanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ? 1f : 0f;
-                int total = adapter.getCount();
 
-                if (position == 0) {
-                    if (total != 1) {
-                        EventDetailFragment nextFragment = (EventDetailFragment) adapter.getFragment(position + 1);
-                        nextFragment.adjustPanelForOffset(panelOffset);
-                    }
-                } else if (position != total - 1) {
-                    EventDetailFragment prevFrag = (EventDetailFragment) adapter.getFragment(position - 1);
-                    EventDetailFragment nextFrag = (EventDetailFragment) adapter.getFragment(position + 1);
+                AccessibleFragment previousFragment = adapter.getAccessibleFragment(position - 1);
+                AccessibleFragment currentFragment = adapter.getAccessibleFragment(position);
+                AccessibleFragment nextFragment = adapter.getAccessibleFragment(position + 1);
 
-                    prevFrag.adjustPanelForOffset(panelOffset);
-                    nextFrag.adjustPanelForOffset(panelOffset);
-                } else {
-                    EventDetailFragment prevFrag = (EventDetailFragment) adapter.getFragment(position - 1);
-                    prevFrag.adjustPanelForOffset(panelOffset);
+                if(previousFragment != null) {
+                    previousFragment.sendData(panelOffset);
+                }
+
+                if(currentFragment != null) {
+                    currentFragment.sendData(panelOffset);
+                }
+
+                if(nextFragment != null) {
+                    nextFragment.sendData(panelOffset);
                 }
             }
 
             @Override
             public void onPageSelected(int position) {
-
+                if(mTimelineAccessibleFragment != null) {
+                    Event e = mCalendarEvents.get(position);
+                    mTimelineAccessibleFragment.sendData(e);
+                }
             }
 
             @Override
@@ -95,8 +103,8 @@ public class TimelineActivity extends AppCompatActivity implements SensorEventLi
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
                 int position = mCalendarEventViewPager.getCurrentItem();
-                EventDetailFragment fragment = (EventDetailFragment) adapter.getFragment(position);
-                fragment.adjustPanelForOffset(slideOffset);
+                AccessibleFragment fragment = adapter.getAccessibleFragment(position);
+                fragment.sendData(slideOffset);
             }
 
             @Override
@@ -143,6 +151,14 @@ public class TimelineActivity extends AppCompatActivity implements SensorEventLi
         mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
     }
 
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+
+        if(fragment instanceof TimelineActivityFragment) {
+            mTimelineAccessibleFragment = (AccessibleFragment) fragment;
+        }
+    }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
@@ -186,5 +202,24 @@ public class TimelineActivity extends AppCompatActivity implements SensorEventLi
         } else {
             mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         }
+    }
+
+    @Override
+    public void sendData(Event data) {
+        int position = -1;
+        for(int i = 0; i < mCalendarEvents.size(); i++) {
+            Event event = mCalendarEvents.get(i);
+            if(event.getId() == data.getId()) {
+                position = i;
+                break;
+            }
+        }
+
+        if(position != -1) {
+            mCalendarEventViewPager.setCurrentItem(position, true);
+            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        }
+
+        Log.d(getClass().getSimpleName(), "Position: " + position);
     }
 }

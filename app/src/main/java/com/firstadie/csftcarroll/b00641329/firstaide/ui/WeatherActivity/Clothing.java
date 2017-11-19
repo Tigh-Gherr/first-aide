@@ -35,8 +35,14 @@ public enum Clothing {
         mWeatherCodes = new String[weatherCodes.length * 2];
         for(int i = 0; i < weatherCodes.length; i++) {
             int j = i * 2;
-            mWeatherCodes[j] = "0" + weatherCodes[i] + "d";
-            mWeatherCodes[j + 1] = "0" + weatherCodes[i] + "n";
+
+            if(weatherCodes[i] < 10) {
+                mWeatherCodes[j] = "0" + weatherCodes[i] + "d";
+                mWeatherCodes[j + 1] = "0" + weatherCodes[i] + "n";
+            } else {
+                mWeatherCodes[j] = weatherCodes[i] + "d";
+                mWeatherCodes[j + 1] = weatherCodes[i] + "n";
+            }
         }
     }
 

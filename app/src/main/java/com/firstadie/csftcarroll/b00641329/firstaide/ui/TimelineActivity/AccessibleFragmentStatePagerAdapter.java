@@ -3,30 +3,29 @@ package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.SparseArray;
 import android.view.ViewGroup;
-
-import java.util.HashMap;
 
 /**
  * Created by tigh on 17/11/17.
  */
 
-public class FragmentAccessibleStatePagerAdapter extends FragmentStatePagerAdapter {
-    private HashMap<Integer, Fragment> mFragments;
+public class AccessibleFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
-    public FragmentAccessibleStatePagerAdapter(FragmentManager fm) {
+    private SparseArray<AccessibleFragment> mFragments;
+
+    public AccessibleFragmentStatePagerAdapter(FragmentManager fm) {
         super(fm);
-        mFragments = new HashMap<>();
+        mFragments = new SparseArray<>();
     }
 
-
-    public Fragment getFragment(int position) {
+    public AccessibleFragment getAccessibleFragment(int position) {
         return mFragments.get(position);
     }
 
     @Override
     public Fragment getItem(int position) {
-        return null;
+        return (Fragment) mFragments.get(position);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class FragmentAccessibleStatePagerAdapter extends FragmentStatePagerAdapt
     public Object instantiateItem(ViewGroup container, int position) {
         Object item = super.instantiateItem(container, position);
         if(item instanceof Fragment) {
-            mFragments.put(position, (Fragment) item);
+            mFragments.put(position, (AccessibleFragment) item);
         }
 
         return item;

@@ -78,6 +78,8 @@ public abstract class Event implements Serializable {
         return false;
     }
 
+    public abstract int getId();
+
     public abstract JSONObject toJSONObject();
 
     public abstract String toJSONString();

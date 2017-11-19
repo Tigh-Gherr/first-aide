@@ -26,7 +26,8 @@ public class CalendarEvent extends Event implements Serializable {
         mEventLocation = eventLocation;
     }
 
-    public int getCalendarId() {
+    @Override
+    public int getId() {
         return mCalendarId;
     }
 
