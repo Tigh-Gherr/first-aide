@@ -36,14 +36,11 @@ import org.json.JSONObject;
 
 public class CreateAccountDialog extends AppCompatDialogFragment {
 
-    public static final String KEY_FRAGMENT =
-            "com.firstaide.csftcarroll.b00641329.firstaide.ui.LoginActivity.CreateAccountDialog";
+    public static final String KEY_FRAGMENT = CreateAccountDialog.class.getName();
 
-    public static final String KEY_EMAIL =
-            "com.firstaide.csftcarroll.b00641329.firstaide.ui.LoginActivity.CreateAccountDialog.EMAIL";
+    public static final String KEY_EMAIL = KEY_FRAGMENT + ".EMAIL";
 
-    public static final String KEY_PASSWORD =
-            "com.firstaide.csftcarroll.b00641329.firstaide.ui.LoginActivity.CreateAccountDialog.PASSWORD";
+    public static final String KEY_PASSWORD = KEY_FRAGMENT + ".PASSWORD";
 
     private View mDialogContentView;
 

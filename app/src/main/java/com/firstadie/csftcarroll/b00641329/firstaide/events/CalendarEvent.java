@@ -12,23 +12,26 @@ import java.io.Serializable;
 public class CalendarEvent extends Event implements Serializable {
 
     public static final String JSON_KEY_CALENDAR_ID = "calendar_id";
+    public static final String JSON_KEY_EVENT_ID = "event_id";
     public static final String JSON_KEY_DESCRIPTION = "description";
     public static final String JSON_KEY_EVENT_LOCATION = "event_location";
 
     private int mCalendarId;
+    private int mEventId;
     private String mDescription;
     private String mEventLocation;
 
-    public CalendarEvent(int calendarId, String title, String description, long startTime, long endTime, String eventLocation) {
+    public CalendarEvent(int calendarId, int eventId, String title, String description, long startTime, long endTime, String eventLocation) {
         super(title, startTime, endTime);
         mCalendarId = calendarId;
+        mEventId = eventId;
         mDescription = description;
         mEventLocation = eventLocation;
     }
 
     @Override
     public int getId() {
-        return mCalendarId;
+        return mEventId;
     }
 
     public String getDescription() {
@@ -48,6 +51,7 @@ public class CalendarEvent extends Event implements Serializable {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(JSON_KEY_CALENDAR_ID, mCalendarId);
+            jsonObject.put(JSON_KEY_EVENT_ID, mEventId);
             jsonObject.put(JSON_KEY_TITLE, getTitle());
             jsonObject.put(JSON_KEY_DESCRIPTION, mDescription);
             jsonObject.put(JSON_KEY_START_TIME, getStartTime());
@@ -62,8 +66,4 @@ public class CalendarEvent extends Event implements Serializable {
         return jsonObject;
     }
 
-    @Override
-    public String toJSONString() {
-        return toJSONObject().toString();
-    }
 }

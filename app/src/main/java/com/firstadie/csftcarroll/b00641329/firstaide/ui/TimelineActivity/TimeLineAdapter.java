@@ -25,13 +25,11 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
         void onCalendarEventTouched(Event event);
     }
 
-    private Context mContext;
     private List<Event> mEvents;
 
     private OnCalendarEventTouchListener mOnCalendarEventTouchListener;
 
-    public TimeLineAdapter(Context context, List<Event> events) {
-        mContext = context;
+    public TimeLineAdapter(List<Event> events) {
         mEvents = events;
     }
 

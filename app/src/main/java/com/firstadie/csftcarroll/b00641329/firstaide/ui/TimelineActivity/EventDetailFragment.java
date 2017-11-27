@@ -198,7 +198,7 @@ public class EventDetailFragment extends Fragment
     }
 
     @Override
-    public void sendData(Float data) {
+    public void receiveData(Float data) {
         adjustPanelForOffset(data);
     }
 }

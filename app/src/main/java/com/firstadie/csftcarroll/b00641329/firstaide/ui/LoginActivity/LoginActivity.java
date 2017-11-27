@@ -45,6 +45,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        UserSingleton.get(LoginActivity.this).setUser(null);
+        UserSingleton.get().setUser(null);
     }
 }

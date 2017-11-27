@@ -41,6 +41,8 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
     private void populateTimeline() {
         mCalendarEvents = mCalendarHelper.getCalendarEventsWithRightNow();
 
+        mCalendarHelper.getCalendarEvents();
+
         TimelinePlanner planner = new TimelinePlanner(
                 mCalendarEvents,
                 mUser.getUserHobbies()
@@ -48,7 +50,7 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
 
         List<Event> timelineEvents = planner.planTimeline();
 
-        mTimeLineAdapter = new TimeLineAdapter(getActivity(), timelineEvents);
+        mTimeLineAdapter = new TimeLineAdapter(timelineEvents);
         mTimeLineAdapter.setOnCalendarEventTouchListener(new TimeLineAdapter.OnCalendarEventTouchListener() {
             @Override
             public void onCalendarEventTouched(Event event) {
@@ -59,6 +61,15 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
         mTimelineRecyclerView.setAdapter(mTimeLineAdapter);
 
         mTimelineRecyclerView.scrollToPosition(mTimeLineAdapter.currentEventPosition());
+    }
+
+    @Override
+    public void receiveData(Event data) {
+        int pos = mTimeLineAdapter.getPositionOfEvent(data);
+        if(pos != -1) {
+            LinearLayoutManager llm = (LinearLayoutManager) mTimelineRecyclerView.getLayoutManager();
+            llm.scrollToPositionWithOffset(pos, 0);
+        }
     }
 
     @Override
@@ -74,7 +85,7 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
         mTimelineRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTimelineRecyclerView.setHasFixedSize(false);
 
-        mUser = UserSingleton.get(getActivity()).getUser();
+        mUser = UserSingleton.get().getUser();
     }
 
     @Override
@@ -89,17 +100,8 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
         super.onResume();
         if(mUser == null) {
             NavUtils.navigateUpFromSameTask(getActivity());
-            return;
-        }
-        populateTimeline();
-    }
-
-    @Override
-    public void sendData(Event data) {
-        int pos = mTimeLineAdapter.getPositionOfEvent(data);
-        if(pos != -1) {
-            LinearLayoutManager llm = (LinearLayoutManager) mTimelineRecyclerView.getLayoutManager();
-            llm.scrollToPositionWithOffset(pos, 0);
+        } else {
+            populateTimeline();
         }
     }
 }

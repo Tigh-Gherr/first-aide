@@ -12,6 +12,14 @@ public class CalendarUtils {
         return (int) TimeUnit.MINUTES.convert(endTime - startTime, TimeUnit.MILLISECONDS);
     }
 
+    public static long getStartOfDayInMillis() {
+        return getDayBracketInMillis(true);
+    }
+
+    public static long getEndOfDayInMillis() {
+        return getDayBracketInMillis(false);
+    }
+
     public static long getDayBracketInMillis(boolean dayStart) {
         int hourOfDay = dayStart ? 0 : 23;
         int minute = dayStart ? 0 : 59;

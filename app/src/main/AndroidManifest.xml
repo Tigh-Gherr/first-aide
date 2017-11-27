@@ -48,8 +48,13 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAJa2t-fOIe3OBixnFC412EnRKGUg_2yzM" />
+            android:value="AIzaSyAJa2t-fOIe3OBixnFC412EnRKGUg_2yzM"/>
 
+        <activity
+            android:name=".ui.SettingsActivity.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

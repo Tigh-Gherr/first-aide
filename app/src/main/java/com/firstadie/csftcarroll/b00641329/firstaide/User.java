@@ -72,7 +72,7 @@ public class User {
         return mUserHobbies;
     }
 
-    public String toJSONString() {
+    public JSONObject toJSONObject() {
         JSONObject jsonObject = new JSONObject();
 
         try {
@@ -82,14 +82,9 @@ public class User {
             jsonObject.put("email", mEmail);
 
             JSONArray jsonActivitiesArray = new JSONArray();
-            for(UserHobby activity : mUserHobbies) {
-                JSONObject jsonActivity = new JSONObject();
-                jsonActivity.put("title", activity.getTitle());
-                jsonActivity.put("duration", activity.getDuration());
-                jsonActivity.put("priority", activity.getPriority());
-                jsonActivity.put("id", activity.getId());
-
-                jsonActivitiesArray.put(jsonActivity);
+            for(UserHobby hobby : mUserHobbies) {
+                JSONObject jsonUserHobby = hobby.toJSONObject();
+                jsonActivitiesArray.put(jsonUserHobby);
             }
 
             jsonObject.put("activities", jsonActivitiesArray);
@@ -97,6 +92,10 @@ public class User {
             e.printStackTrace();
         }
 
-        return jsonObject.toString();
+        return jsonObject;
+    }
+
+    public String toJSONString() {
+        return toJSONObject().toString();
     }
 }

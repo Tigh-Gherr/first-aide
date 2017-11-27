@@ -13,12 +13,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.CalendarHelper;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.ui.SettingsActivity.SettingsActivity;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.WeatherActivity.WeatherActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -43,8 +46,7 @@ public class TimelineActivity extends AppCompatActivity
     private AccessibleFragment<Event> mTimelineAccessibleFragment;
 
     private void initViewPager() {
-        CalendarHelper helper = new CalendarHelper(TimelineActivity.this);
-        mCalendarEvents = helper.getCalendarEvents();
+        mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
         FragmentManager fm = getSupportFragmentManager();
         final AccessibleFragmentStatePagerAdapter adapter = new AccessibleFragmentStatePagerAdapter(fm) {
@@ -66,22 +68,19 @@ public class TimelineActivity extends AppCompatActivity
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 position = mCalendarEventViewPager.getCurrentItem();
 
-                float panelOffset = mTimelinePanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED ? 1f : 0f;
+                float panelOffset = mTimelinePanelLayout.getPanelState() ==
+                                                SlidingUpPanelLayout.PanelState.EXPANDED ? 1f : 0f;
 
-                AccessibleFragment previousFragment = adapter.getAccessibleFragment(position - 1);
-                AccessibleFragment currentFragment = adapter.getAccessibleFragment(position);
-                AccessibleFragment nextFragment = adapter.getAccessibleFragment(position + 1);
+                AccessibleFragment[] surroundingFragments = new AccessibleFragment[] {
+                        adapter.getAccessibleFragment(position - 1),
+                        adapter.getAccessibleFragment(position),
+                        adapter.getAccessibleFragment(position + 1)
+                };
 
-                if(previousFragment != null) {
-                    previousFragment.sendData(panelOffset);
-                }
-
-                if(currentFragment != null) {
-                    currentFragment.sendData(panelOffset);
-                }
-
-                if(nextFragment != null) {
-                    nextFragment.sendData(panelOffset);
+                for(AccessibleFragment fragment : surroundingFragments) {
+                    if(fragment != null) {
+                        fragment.receiveData(panelOffset);
+                    }
                 }
             }
 
@@ -89,7 +88,7 @@ public class TimelineActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 if(mTimelineAccessibleFragment != null) {
                     Event e = mCalendarEvents.get(position);
-                    mTimelineAccessibleFragment.sendData(e);
+                    mTimelineAccessibleFragment.receiveData(e);
                 }
             }
 
@@ -104,7 +103,7 @@ public class TimelineActivity extends AppCompatActivity
             public void onPanelSlide(View panel, float slideOffset) {
                 int position = mCalendarEventViewPager.getCurrentItem();
                 AccessibleFragment fragment = adapter.getAccessibleFragment(position);
-                fragment.sendData(slideOffset);
+                fragment.receiveData(slideOffset);
             }
 
             @Override
@@ -135,6 +134,32 @@ public class TimelineActivity extends AppCompatActivity
 
             mVibrator.vibrate(300);
             startActivity(new Intent(TimelineActivity.this, WeatherActivity.class));
+        }
+    }
+
+    @Override
+    public void onArrowPressed() {
+        if(mTimelinePanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        } else {
+            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        }
+    }
+
+    @Override
+    public void sendData(Event data) {
+        int position = -1;
+        for(int i = 0; i < mCalendarEvents.size(); i++) {
+            Event event = mCalendarEvents.get(i);
+            if(event.getId() == data.getId()) {
+                position = i;
+                break;
+            }
+        }
+
+        if(position != -1) {
+            mCalendarEventViewPager.setCurrentItem(position, true);
+            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
         }
     }
 
@@ -173,6 +198,24 @@ public class TimelineActivity extends AppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_timeline, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(TimelineActivity.this, SettingsActivity.class));
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
@@ -192,34 +235,13 @@ public class TimelineActivity extends AppCompatActivity
                 mSensor,
                 SensorManager.SENSOR_DELAY_NORMAL);
 
-        initViewPager();
-    }
+        CalendarHelper helper = new CalendarHelper(TimelineActivity.this);
+        mCalendarEvents = helper.getCalendarEvents();
 
-    @Override
-    public void onArrowPressed() {
-        if(mTimelinePanelLayout.getPanelState() == SlidingUpPanelLayout.PanelState.COLLAPSED) {
-            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
+        if(mCalendarEvents.size() > 0) {
+            initViewPager();
         } else {
-            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
         }
-    }
-
-    @Override
-    public void sendData(Event data) {
-        int position = -1;
-        for(int i = 0; i < mCalendarEvents.size(); i++) {
-            Event event = mCalendarEvents.get(i);
-            if(event.getId() == data.getId()) {
-                position = i;
-                break;
-            }
-        }
-
-        if(position != -1) {
-            mCalendarEventViewPager.setCurrentItem(position, true);
-            mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
-        }
-
-        Log.d(getClass().getSimpleName(), "Position: " + position);
     }
 }

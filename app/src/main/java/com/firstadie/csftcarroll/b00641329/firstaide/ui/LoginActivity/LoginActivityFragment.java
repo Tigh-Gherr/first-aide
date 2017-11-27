@@ -20,8 +20,10 @@ import com.firstadie.csftcarroll.b00641329.firstaide.OnEndpointQueryCompleteList
 import com.firstadie.csftcarroll.b00641329.firstaide.OnUserConfirmedListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.UserHobby;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationHelper;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
+import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.AccessibleFragment;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity;
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
@@ -87,6 +89,9 @@ public class LoginActivityFragment extends Fragment {
         task.setOnPostCompleteListener(new OnEndpointQueryCompleteListener() {
             @Override
             public void onQueryComplete(String result) throws JSONException {
+                mSignInProgressBar.animate().setDuration(50).alpha(0);
+                mSignInProgressBar.setVisibility(View.INVISIBLE);
+
                 if(result == null) {
                     Snackbar.make(
                             getView(),
@@ -98,14 +103,11 @@ public class LoginActivityFragment extends Fragment {
 
                 Log.i(getClass().getSimpleName(), "Result is null");
 
-                mSignInProgressBar.animate().setDuration(50).alpha(0);
-                mSignInProgressBar.setVisibility(View.INVISIBLE);
-
                 JSONObject jsonResult = new JSONObject(result);
                 Snackbar.make(getView(), jsonResult.getString("message"), Snackbar.LENGTH_SHORT).show();
 
                 if (jsonResult.getString("status").equals("SUCCESS")) {
-                    UserSingleton.get(getActivity()).setUser(User.buildFromJSON(jsonResult.getJSONObject("user")));
+                    UserSingleton.get().setUser(User.buildFromJSON(jsonResult.getJSONObject("user")));
                     startActivity(new Intent(getActivity(), TimelineActivity.class));
                 }
             }

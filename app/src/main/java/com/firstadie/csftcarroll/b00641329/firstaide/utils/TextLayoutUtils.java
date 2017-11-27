@@ -51,7 +51,9 @@ public class TextLayoutUtils {
         if(s >= 60 * 60) {
             return "";
         } else {
-            return (s % 60) + " minutes";
+            double minutes = s / 60.0;
+            DecimalFormat df = new DecimalFormat("0");
+            return df.format(minutes) + " minutes";
         }
     }
 }

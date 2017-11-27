@@ -9,17 +9,14 @@ import android.content.Context;
 public class UserSingleton {
     private static UserSingleton sUserSingleton;
     private User mUser;
-    private Context mApplicationContext;
 
-    private UserSingleton(Context c) {
-        mApplicationContext = c;
+    private UserSingleton() {
     }
 
-    public static UserSingleton get(Context c) {
+    public static UserSingleton get() {
         if(sUserSingleton == null) {
-            sUserSingleton = new UserSingleton(c.getApplicationContext());
+            sUserSingleton = new UserSingleton();
         }
-
         return sUserSingleton;
     }
 

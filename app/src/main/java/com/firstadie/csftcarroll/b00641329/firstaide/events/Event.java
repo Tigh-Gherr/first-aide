@@ -48,20 +48,16 @@ public abstract class Event implements Serializable {
         return CalendarUtils.calculateDifferenceInMinutes(mStartTime, mEndTime);
     }
 
-    public void setStartTime(long startTime) {
-        mStartTime = startTime;
-    }
-
-    public void setEndTime(long endTime) {
-        mEndTime = endTime;
-    }
-
     public long getStartTime() {
         return mStartTime;
     }
 
     public long getEndTime() {
         return mEndTime;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
     }
 
     public boolean isCurrentEvent() {
@@ -82,5 +78,7 @@ public abstract class Event implements Serializable {
 
     public abstract JSONObject toJSONObject();
 
-    public abstract String toJSONString();
+    public String toJSONString() {
+        return toJSONObject().toString();
+    };
 }

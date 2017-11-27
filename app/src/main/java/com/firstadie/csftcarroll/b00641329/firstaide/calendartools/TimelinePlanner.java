@@ -30,7 +30,7 @@ public class TimelinePlanner {
         API api = new GooglePlacesAPI();
 
         List<Event> timelineEvents = new ArrayList<>();
-        long previousEndTime = CalendarUtils.getDayBracketInMillis(true);
+        long previousEndTime = CalendarUtils.getStartOfDayInMillis();
 
         for(Event event : mCalendarEvents) {
             bridgeEvents(event, previousEndTime, timelineEvents);
@@ -50,7 +50,7 @@ public class TimelinePlanner {
 
         int freeTime = CalendarUtils.calculateDifferenceInMinutes(
                 mCalendarEvents.get(mCalendarEvents.size() - 1).getEndTime(),
-                CalendarUtils.getDayBracketInMillis(false)
+                CalendarUtils.getEndOfDayInMillis()
         );
         bridgeFreeTime(freeTime, timelineEvents);
 
