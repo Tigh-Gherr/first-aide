@@ -38,4 +38,8 @@ public class LocationSingleton {
 
         return latlng;
     }
+
+    public static void cancelLocationUpdates() {
+        get().mLocationHelper.cancelUpdates();
+    }
 }

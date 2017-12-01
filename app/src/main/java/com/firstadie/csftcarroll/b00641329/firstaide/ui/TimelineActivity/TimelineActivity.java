@@ -21,6 +21,7 @@ import android.view.View;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.CalendarHelper;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.SettingsActivity.SettingsActivity;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.WeatherActivity.WeatherActivity;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -49,7 +50,7 @@ public class TimelineActivity extends AppCompatActivity
         mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
 
         FragmentManager fm = getSupportFragmentManager();
-        final AccessibleFragmentStatePagerAdapter adapter = new AccessibleFragmentStatePagerAdapter(fm) {
+        final AccessibleFragmentPagerAdapter adapter = new AccessibleFragmentPagerAdapter(fm) {
             @Override
             public Fragment getItem(int position) {
                 return EventDetailFragment.newInstance(mCalendarEvents.get(position));
@@ -79,7 +80,7 @@ public class TimelineActivity extends AppCompatActivity
 
                 for(AccessibleFragment fragment : surroundingFragments) {
                     if(fragment != null) {
-                        fragment.receiveData(panelOffset);
+                        fragment.passData(panelOffset);
                     }
                 }
             }
@@ -88,7 +89,7 @@ public class TimelineActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 if(mTimelineAccessibleFragment != null) {
                     Event e = mCalendarEvents.get(position);
-                    mTimelineAccessibleFragment.receiveData(e);
+                    mTimelineAccessibleFragment.passData(e);
                 }
             }
 
@@ -103,7 +104,7 @@ public class TimelineActivity extends AppCompatActivity
             public void onPanelSlide(View panel, float slideOffset) {
                 int position = mCalendarEventViewPager.getCurrentItem();
                 AccessibleFragment fragment = adapter.getAccessibleFragment(position);
-                fragment.receiveData(slideOffset);
+                fragment.passData(slideOffset);
             }
 
             @Override
@@ -147,7 +148,7 @@ public class TimelineActivity extends AppCompatActivity
     }
 
     @Override
-    public void sendData(Event data) {
+    public void passData(Event data) {
         int position = -1;
         for(int i = 0; i < mCalendarEvents.size(); i++) {
             Event event = mCalendarEvents.get(i);
@@ -219,6 +220,7 @@ public class TimelineActivity extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+        LocationSingleton.cancelLocationUpdates();
     }
 
     @Override

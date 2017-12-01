@@ -26,7 +26,7 @@ public class CalendarHelper {
 
     private String[] mCalendarFields;
     private String[] mEventFields;
-    private static final String EVENT_QUERY = CalendarContract.Instances.CALENDAR_ID + " = ?";
+    private static final String ALL_DAY_FALSE_QUERY = CalendarContract.Instances.ALL_DAY + " = 0";
 
     public CalendarHelper(Context context) {
         mContext = context;
@@ -75,17 +75,17 @@ public class CalendarHelper {
         ContentUris.appendId(builder, CalendarUtils.getStartOfDayInMillis());
         ContentUris.appendId(builder, CalendarUtils.getEndOfDayInMillis());
 
-        StringBuilder clauseBuilder = new StringBuilder();
+        Log.d(getClass().getSimpleName(), builder.build().toString());
+        StringBuilder clauseBuilder = new StringBuilder("(");
         String condition = "";
         for (int i = 0; i < ids.size(); i++) {
             clauseBuilder.append(condition)
                     .append(CalendarContract.Instances.CALENDAR_ID).append(" = ?");
             condition = " OR ";
         }
+        clauseBuilder.append(") AND ").append(ALL_DAY_FALSE_QUERY);
 
         String clause = clauseBuilder.toString();
-        Log.d(getClass().getSimpleName(), "CLAUSE :: " + clause);
-
         Cursor eventCursor = mContext.getContentResolver().query(
                 builder.build(),
                 mEventFields,

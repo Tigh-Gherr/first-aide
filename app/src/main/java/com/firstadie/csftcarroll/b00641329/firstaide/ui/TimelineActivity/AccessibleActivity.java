@@ -5,5 +5,5 @@ package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
  */
 
 public interface AccessibleActivity<T> {
-    void sendData(T data);
+    void passData(T data);
 }

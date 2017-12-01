@@ -1,6 +1,6 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.api;
 
-import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextLayoutUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 import com.google.android.gms.maps.model.LatLng;
 
 /**
@@ -46,10 +46,10 @@ public class GooglePlace {
     }
 
     public String getDistanceMiles() {
-        return TextLayoutUtils.kilometersToMiles(mDistance);
+        return TextFormatUtils.kilometersToMiles(mDistance);
     }
 
     public String getTravelTimeMinutes() {
-        return TextLayoutUtils.secondsToTime(mTravelTime);
+        return TextFormatUtils.secondsToTime(mTravelTime);
     }
 }

@@ -1,6 +1,9 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineView.TimelineView;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import java.util.List;
 
@@ -21,6 +25,8 @@ import java.util.List;
 
 public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.TimelineViewHolder> {
 
+    private Context mContext;
+
     public interface OnCalendarEventTouchListener {
         void onCalendarEventTouched(Event event);
     }
@@ -29,7 +35,8 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
 
     private OnCalendarEventTouchListener mOnCalendarEventTouchListener;
 
-    public TimeLineAdapter(List<Event> events) {
+    public TimeLineAdapter(Context context, List<Event> events) {
+        mContext = context;
         mEvents = events;
     }
 
@@ -39,8 +46,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
 
     @Override
     public int getItemViewType(int position) {
-        int viewType = TimelineView.getTimeLineViewType(position, getItemCount());
-        return viewType;
+        return TimelineView.getTimeLineViewType(position, getItemCount());
     }
 
     @Override
@@ -55,20 +61,22 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
         return mEvents != null ? mEvents.size() : 0;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onBindViewHolder(TimelineViewHolder holder, int position) {
         final Event event = mEvents.get(position);
 
         String title = event.getTitle();
         int duration = event.getDuration();
+        String durationText = TextFormatUtils.secondsToTime(duration * 60, false);
 
         holder.mTitleTextView.setText(title);
-        holder.mDurationTextView.setText(String.valueOf(duration));
+        holder.mDurationTextView.setText(durationText);
 
         switch (event.getEventType()) {
             case Event.CALENDAR_EVENT:
                 holder.mCalendarEventIcon.setVisibility(View.VISIBLE);
-                holder.mEventCardView.setOnClickListener(new View.OnClickListener() {
+                holder.mEventLocationCardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         mOnCalendarEventTouchListener.onCalendarEventTouched(event);
@@ -76,21 +84,39 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
                 });
                 break;
             case Event.HOBBY:
-                holder.mCalendarEventIcon.setVisibility(View.INVISIBLE);
+                holder.mCalendarEventIcon.setVisibility(View.GONE);
                 break;
             case Event.RIGHT_NOW:
-                holder.mCalendarEventIcon.setVisibility(View.INVISIBLE);
+                holder.mCalendarEventIcon.setVisibility(View.GONE);
         }
 
         if(event.isCurrentEvent()) {
-//            holder.mMarkerTimelineView.setMarker(
-//                    VectorDrawableCompat.create(
-//                            mContext.getResources(),
-//                            R.drawable.marker_current_event,
-//                            mContext.getTheme()
-//                    )
-//            );
+            setTimelineColors(
+                    holder.mMarkerTimelineView,
+                    R.drawable.marker_current_event,
+                    R.color.current_event_green
+            );
+        } else {
+            setTimelineColors(
+                    holder.mMarkerTimelineView,
+                    R.drawable.marker_event,
+                    R.color.other_event_red
+            );
         }
+    }
+
+    private void setTimelineColors(TimelineView timelineView, int marker, int color) {
+        timelineView.setMarker(
+                ContextCompat.getDrawable(mContext, marker)
+        );
+
+        timelineView.setStartLine(new ColorDrawable(
+                ContextCompat.getColor(mContext, color)
+        ));
+
+        timelineView.setEndLine(new ColorDrawable(
+                ContextCompat.getColor(mContext, color)
+        ));
     }
 
     public int currentEventPosition() {
@@ -116,7 +142,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
     }
 
     public class TimelineViewHolder extends RecyclerView.ViewHolder {
-        CardView mEventCardView;
+        CardView mEventLocationCardView;
         TimelineView mMarkerTimelineView;
         AppCompatTextView mTitleTextView;
         AppCompatTextView mDurationTextView;
@@ -125,7 +151,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
         public TimelineViewHolder(View itemView) {
             super(itemView);
 
-            mEventCardView = itemView.findViewById(R.id.cardview_eventCard);
+            mEventLocationCardView = itemView.findViewById(R.id.cardview_eventCard);
             mMarkerTimelineView = itemView.findViewById(R.id.timelineview_marker);
             mTitleTextView = itemView.findViewById(R.id.textview_eventTitle);
             mDurationTextView = itemView.findViewById(R.id.textview_eventDuration);

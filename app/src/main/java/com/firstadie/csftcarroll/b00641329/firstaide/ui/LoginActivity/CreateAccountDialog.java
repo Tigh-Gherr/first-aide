@@ -26,6 +26,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.EncryptionUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -144,7 +145,7 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
             }
 
             PostAsyncTask task = new PostAsyncTask();
-            task.setOnPostCompleteListener(new OnEndpointQueryCompleteListener() {
+            task.setEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
                 @Override
                 public void onQueryComplete(String result) throws JSONException {
                     Log.d(CreateAccountDialog.class.getSimpleName(), result);
@@ -166,7 +167,7 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
                     }
                 }
             });
-            task.execute("https://uniprojects.000webhostapp.com/create_account.php", json.toString());
+            task.execute(TextFormatUtils.databaseUrlFor("create_account.php"), json.toString());
         }
     }
 

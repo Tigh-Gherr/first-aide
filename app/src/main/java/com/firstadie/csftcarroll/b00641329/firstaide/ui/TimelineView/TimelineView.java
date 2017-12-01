@@ -3,6 +3,7 @@ package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineView;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
@@ -193,6 +194,14 @@ public class TimelineView extends View {
     public void setStartLine(int color, int viewType) {
         mStartLine = new ColorDrawable(color);
         initLine(viewType);
+    }
+
+    public void setStartLine(ColorDrawable colorDrawable) {
+        setStartLine((Drawable) colorDrawable);
+    }
+
+    public void setEndLine(ColorDrawable colorDrawable) {
+        setEndLine((Drawable) colorDrawable);
     }
 
     /**

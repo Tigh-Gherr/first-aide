@@ -50,21 +50,22 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
 
         List<Event> timelineEvents = planner.planTimeline();
 
-        mTimeLineAdapter = new TimeLineAdapter(timelineEvents);
+        mTimeLineAdapter = new TimeLineAdapter(getActivity(), timelineEvents);
         mTimeLineAdapter.setOnCalendarEventTouchListener(new TimeLineAdapter.OnCalendarEventTouchListener() {
             @Override
             public void onCalendarEventTouched(Event event) {
-                mAccessibleActivity.sendData(event);
+                mAccessibleActivity.passData(event);
             }
         });
 
         mTimelineRecyclerView.setAdapter(mTimeLineAdapter);
 
-        mTimelineRecyclerView.scrollToPosition(mTimeLineAdapter.currentEventPosition());
+        int currentEventPosition = mTimeLineAdapter.currentEventPosition();
+        mTimelineRecyclerView.scrollToPosition(currentEventPosition);
     }
 
     @Override
-    public void receiveData(Event data) {
+    public void passData(Event data) {
         int pos = mTimeLineAdapter.getPositionOfEvent(data);
         if(pos != -1) {
             LinearLayoutManager llm = (LinearLayoutManager) mTimelineRecyclerView.getLayoutManager();

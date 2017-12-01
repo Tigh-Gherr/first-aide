@@ -44,7 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_new_hobby:
                 UserHobby newHobby = new UserHobby();
-                mAccessibleFragment.receiveData(newHobby);
+                mAccessibleFragment.passData(newHobby);
                 return true;
         }
         return super.onOptionsItemSelected(item);

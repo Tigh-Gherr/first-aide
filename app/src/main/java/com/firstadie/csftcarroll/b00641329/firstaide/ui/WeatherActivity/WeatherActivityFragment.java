@@ -20,7 +20,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.api.API;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.Weather;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.WeatherAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
-import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextLayoutUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import org.json.JSONException;
 
@@ -86,7 +86,7 @@ public class WeatherActivityFragment extends Fragment {
     }
 
     private void displayWeather(Weather weather) {
-        mTemperatureTextView.setText(TextLayoutUtils.formatTemperature(weather.getTemperature()));
+        mTemperatureTextView.setText(TextFormatUtils.formatTemperature(weather.getTemperature()));
         mWeatherIconImageView.setImageResource(weather.getWeatherIcon());
         mDescriptionTextView.setText(weather.getDescription());
 

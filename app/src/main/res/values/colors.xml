@@ -10,4 +10,6 @@
 
     <color name="colorMarkerCurrentEvent">#4caf50</color>
     <color name="black">#000000</color>
+    <color name="current_event_green">#4caf50</color>
+    <color name="other_event_red">#e57373</color>
 </resources>

@@ -19,6 +19,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.UserHobby;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.AccessibleFragment;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,7 +34,7 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
     private List<UserHobby> mUserHobbies;
 
     @Override
-    public void receiveData(UserHobby data) {
+    public void passData(UserHobby data) {
         displaySettingsDialog(data);
     }
 
@@ -44,6 +45,44 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
     private RecyclerView mSettingsRecyclerView;
     private SettingsAdapter mSettingsAdapter;
 
+    private ItemTouchHelper.SimpleCallback mSettingsRecyclerViewCallBack = new ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT
+    ) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            if (!(direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT)) {
+                return;
+            }
+
+            int position = viewHolder.getAdapterPosition();
+            UserHobby toBeDeleted = mUserHobbies.get(position);
+
+            mUserHobbies.remove(position);
+            mSettingsAdapter.notifyItemRemoved(position);
+
+            PostAsyncTask task = new PostAsyncTask();
+            task.execute(TextFormatUtils.databaseUrlFor("delete_hobby.php"), toBeDeleted.toJSONString());
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                float width = viewHolder.itemView.getWidth();
+                float fadeBy = (Math.abs(dX) / width) * 2f;
+                float alpha = fadeBy <= 1f ? 1f - fadeBy : 0f;
+                viewHolder.itemView.setAlpha(alpha);
+                viewHolder.itemView.setTranslationX(dX);
+            } else {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        }
+    };
+
     public SettingsActivityFragment() {
     }
 
@@ -53,7 +92,7 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
         dialog.setOnSettingConfirmedListener(new OnSettingConfirmedListener() {
             @Override
             public void onSettingConfirmed(Object setting) {
-                if(setting instanceof UserHobby) {
+                if (setting instanceof UserHobby) {
                     postUserHobby((UserHobby) setting);
                 }
             }
@@ -66,16 +105,17 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
         Log.d(getClass().getSimpleName(), userHobby.toJSONString());
         PostAsyncTask task = new PostAsyncTask();
 
-        task.setOnPostCompleteListener(new OnEndpointQueryCompleteListener() {
+        task.setEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
             @Override
             public void onQueryComplete(String result) throws JSONException {
                 Log.d(SettingsActivityFragment.class.getSimpleName(), result);
 
-                if(result == null) {
+                if (result == null) {
                     Snackbar.make(
                             getView(),
                             "An error occurred.",
-                            Snackbar.LENGTH_SHORT).show();
+                            Snackbar.LENGTH_SHORT
+                    ).show();
 
                     return;
                 }
@@ -83,9 +123,9 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
                 JSONObject jsonResult = new JSONObject(result);
 
                 String hobbyType = jsonResult.getString("hobby_type");
-                if(hobbyType.equals("UPDATE")) {
+                if (hobbyType.equals("UPDATE")) {
                     mSettingsAdapter.notifyItemChanged(userHobby);
-                } else if(hobbyType.equals("NEW")) {
+                } else if (hobbyType.equals("NEW")) {
                     int id = jsonResult.getJSONObject("hobby").getInt("id");
                     userHobby.setId(id);
                     mSettingsAdapter.appendHobby(userHobby);
@@ -93,7 +133,7 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
             }
         });
 
-        task.execute("https://uniprojects.000webhostapp.com/upsert_hobby.php", userHobby.toJSONString());
+        task.execute(TextFormatUtils.databaseUrlFor("upsert_hobby.php"), userHobby.toJSONString());
     }
 
     @Override
@@ -118,45 +158,7 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
         });
         mSettingsRecyclerView.setAdapter(mSettingsAdapter);
 
-        ItemTouchHelper.SimpleCallback simpleCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                        return false;
-                    }
-
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                        if(! (direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT)) {
-                            return;
-                        }
-
-                        int position = viewHolder.getAdapterPosition();
-                        UserHobby toBeDeleted = mUserHobbies.get(position);
-
-                        mUserHobbies.remove(position);
-                        mSettingsAdapter.notifyItemRemoved(position);
-
-                        PostAsyncTask task = new PostAsyncTask();
-                        task.execute("https://uniprojects.000webhostapp.com/delete_hobby.php", toBeDeleted.toJSONString());
-                    }
-
-                    @Override
-                    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                        if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                            float width = viewHolder.itemView.getWidth();
-                            float fadeBy = (Math.abs(dX) / width) * 2f;
-                            float alpha = fadeBy <= 1f ? 1f - fadeBy : 0f;
-                            viewHolder.itemView.setAlpha(alpha);
-                            viewHolder.itemView.setTranslationX(dX);
-                        } else {
-                            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                        }
-                    }
-                };
-
-        ItemTouchHelper touchHelper = new ItemTouchHelper(simpleCallback);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(mSettingsRecyclerViewCallBack);
         touchHelper.attachToRecyclerView(mSettingsRecyclerView);
     }
 }

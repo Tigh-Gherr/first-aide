@@ -8,7 +8,7 @@ import java.util.Date;
  * Created by tigh on 12/11/17.
  */
 
-public class TextLayoutUtils {
+public class TextFormatUtils {
 
     public static String formatTemperature(double temperature) {
         DecimalFormat df = new DecimalFormat("#.#");
@@ -48,12 +48,42 @@ public class TextLayoutUtils {
     }
 
     public static String secondsToTime(int s) {
-        if(s >= 60 * 60) {
-            return "";
+        return secondsToTime(s, true);
+    }
+
+    public static String secondsToTime(int s, boolean longform) {
+        final int hour = 60 * 60;
+        if(s >= hour) {
+            int hours = (s / hour);
+            int minutes = (s % 60);
+            String hoursText = hours + (hours != 1 ? " hrs" : " hr");
+            String minutesText = ", " + minutes + (minutes != 1 ? " mins" : " min");
+            if(longform) {
+                hoursText = hours + (hours != 1 ? " hours" : " hour");
+                minutesText = ", " + minutes + (minutes != 1 ? " minutes" : " minute");
+            }
+
+            if(minutes != 0) {
+                return hoursText + minutesText;
+            } else {
+                return hoursText;
+            }
         } else {
             double minutes = s / 60.0;
             DecimalFormat df = new DecimalFormat("0");
-            return df.format(minutes) + " minutes";
+            String ending = "";
+            if(minutes != 1) {
+                ending = "s";
+            }
+            if(longform) {
+                return df.format(minutes) + " minute" + ending;
+            } else {
+                return df.format(minutes) + " min" + ending;
+            }
         }
+    }
+
+    public static String databaseUrlFor(String endpoint) {
+        return "https://uniprojects.000webhostapp.com/" + endpoint;
     }
 }

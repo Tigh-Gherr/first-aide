@@ -1,7 +1,7 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.ui.WeatherActivity;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
-import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextLayoutUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +60,7 @@ public enum Clothing {
     }
 
     public String getTitle() {
-        return TextLayoutUtils.toTitleCase(name().split("_"));
+        return TextFormatUtils.toTitleCase(name().split("_"));
     }
 
     public int getIcon() {

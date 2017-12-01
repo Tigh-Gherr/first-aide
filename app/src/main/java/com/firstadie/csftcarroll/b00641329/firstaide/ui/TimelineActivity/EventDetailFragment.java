@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlace;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
-import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextLayoutUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -45,11 +46,14 @@ public class EventDetailFragment extends Fragment
     private AppCompatTextView mTitleTextView;
     private AppCompatTextView mTimeTextView;
 
+    private MapView mEventMapView;
+
     private AppCompatTextView mDistanceTextView;
     private AppCompatTextView mTravelTimeTextView;
     private RelativeLayout mPanelHeadingRelativeLayout;
 
-    private MapView mEventMapView;
+    private CardView mEventDescriptionCardView;
+    private AppCompatTextView mEventDescriptionTextView;
 
     private ValueAnimator mTopPanelBackgroundAnimator;
     private ValueAnimator mTopPanelContentAnimator;
@@ -126,11 +130,20 @@ public class EventDetailFragment extends Fragment
 
         mEventMapView = view.findViewById(R.id.mapview_event);
 
-        String startTime = TextLayoutUtils.epochToTime(mCalendarEvent.getStartTime());
-        String endTime = TextLayoutUtils.epochToTime(mCalendarEvent.getEndTime());
+        String startTime = TextFormatUtils.epochToTime(mCalendarEvent.getStartTime());
+        String endTime = TextFormatUtils.epochToTime(mCalendarEvent.getEndTime());
 
         mTitleTextView.setText(mCalendarEvent.getTitle());
         mTimeTextView.setText(startTime + " - " + endTime);
+
+        mEventDescriptionCardView = view.findViewById(R.id.cardview_eventDescriptionCard);
+        mEventDescriptionTextView = view.findViewById(R.id.textview_eventDescription);
+
+        if(mCalendarEvent.getDescription().isEmpty()) {
+            mEventDescriptionCardView.setVisibility(View.GONE);
+        } else {
+            mEventDescriptionTextView.setText(mCalendarEvent.getDescription());
+        }
 
         mArrowImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,7 +211,7 @@ public class EventDetailFragment extends Fragment
     }
 
     @Override
-    public void receiveData(Float data) {
+    public void passData(Float data) {
         adjustPanelForOffset(data);
     }
 }

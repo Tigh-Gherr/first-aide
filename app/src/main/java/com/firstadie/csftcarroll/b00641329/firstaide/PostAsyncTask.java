@@ -20,7 +20,7 @@ public class PostAsyncTask extends AsyncTask<String, Void, String> {
 
     private OnEndpointQueryCompleteListener mListener;
 
-    public void setOnPostCompleteListener(OnEndpointQueryCompleteListener listener) {
+    public void setEndpointQueryCompleteListener(OnEndpointQueryCompleteListener listener) {
         mListener = listener;
     }
 

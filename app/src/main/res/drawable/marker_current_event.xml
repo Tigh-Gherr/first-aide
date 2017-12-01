@@ -3,6 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
 
-    <solid android:color="#4caf50"/>
+    <solid android:color="@color/current_event_green"/>
 
 </shape>

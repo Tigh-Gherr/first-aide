@@ -7,6 +7,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import java.util.List;
+
 /**
  * Created by tigh on 10/11/17.
  */
@@ -42,9 +44,29 @@ public class LocationHelper {
     @SuppressLint("MissingPermission")
     public LocationHelper(Context c) {
         mLocationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
-        mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        mLocation = getLastKnownLocation(c);
 
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, mLocationListener);
+    }
+
+    @SuppressLint("MissingPermission")
+    private Location getLastKnownLocation(Context c) {
+        mLocationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
+        List<String> locationProviders = mLocationManager.getProviders(true);
+        Location location = null;
+
+        for(String provider : locationProviders) {
+            Location l = mLocationManager.getLastKnownLocation(provider);
+            if(l == null) {
+                continue;
+            }
+
+            if(location == null || l.getAccuracy() < location.getAccuracy()) {
+                location = l;
+            }
+        }
+
+        return location;
     }
 
     public double getLongitude() {
@@ -53,6 +75,10 @@ public class LocationHelper {
 
     public double getLatitude() {
         return mLocation.getLatitude();
+    }
+
+    public void cancelUpdates() {
+        mLocationManager.removeUpdates(mLocationListener);
     }
 
 }

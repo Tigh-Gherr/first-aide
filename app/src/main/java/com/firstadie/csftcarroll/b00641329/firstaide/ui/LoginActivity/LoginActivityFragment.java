@@ -20,16 +20,15 @@ import com.firstadie.csftcarroll.b00641329.firstaide.OnEndpointQueryCompleteList
 import com.firstadie.csftcarroll.b00641329.firstaide.OnUserConfirmedListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
-import com.firstadie.csftcarroll.b00641329.firstaide.events.UserHobby;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationHelper;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
-import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.AccessibleFragment;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivity;
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.EncryptionUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +85,7 @@ public class LoginActivityFragment extends Fragment {
 
 
         PostAsyncTask task = new PostAsyncTask();
-        task.setOnPostCompleteListener(new OnEndpointQueryCompleteListener() {
+        task.setEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
             @Override
             public void onQueryComplete(String result) throws JSONException {
                 mSignInProgressBar.animate().setDuration(50).alpha(0);
@@ -112,7 +111,7 @@ public class LoginActivityFragment extends Fragment {
                 }
             }
         });
-        task.execute("https://uniprojects.000webhostapp.com/login.php", json.toString());
+        task.execute(TextFormatUtils.databaseUrlFor("login.php"), json.toString());
     }
 
     private void showAccountCreationDialog(String email, String password) {
