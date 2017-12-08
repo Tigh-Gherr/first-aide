@@ -16,6 +16,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.CalendarHelper;
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.TimelinePlanner;
+import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
 
 import java.util.List;
@@ -38,18 +39,41 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
     public TimelineActivityFragment() {
     }
 
-    private void populateTimeline() {
+    private void prePopulateTimeline() {
         mCalendarEvents = mCalendarHelper.getCalendarEventsWithRightNow();
 
-        mCalendarHelper.getCalendarEvents();
+        CalendarEvent nextEvent = null;
+        for(int i = 0; i < mCalendarEvents.size(); i++) {
+            Event event = mCalendarEvents.get(i);
+            if(event.isCurrentEvent()) {
+                if(mCalendarEvents.indexOf(event) != mCalendarEvents.size() - 1) {
+                    nextEvent = (CalendarEvent) mCalendarEvents.get(i + 1);
+                    break;
+                }
+            }
+        }
 
         TimelinePlanner planner = new TimelinePlanner(
                 mCalendarEvents,
                 mUser.getUserHobbies()
         );
 
-        List<Event> timelineEvents = planner.planTimeline();
+        if(nextEvent == null || nextEvent.getEventLocation().isEmpty()) {
+            List<Event> timelineEvents = planner.planTimeline();
+            populateTimeline(timelineEvents);
+        } else {
+            planner.planTimelineBeta(nextEvent);
+            planner.setOnPlanningFinishedListener(new TimelinePlanner.OnPlanningFinishedListener() {
+                @Override
+                public void onPlanningFinished(List<Event> timelineEvents) {
+                    populateTimeline(timelineEvents);
+                }
+            });
+        }
 
+    }
+
+    private void populateTimeline(List<Event> timelineEvents) {
         mTimeLineAdapter = new TimeLineAdapter(getActivity(), timelineEvents);
         mTimeLineAdapter.setOnCalendarEventTouchListener(new TimeLineAdapter.OnCalendarEventTouchListener() {
             @Override
@@ -102,7 +126,7 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
         if(mUser == null) {
             NavUtils.navigateUpFromSameTask(getActivity());
         } else {
-            populateTimeline();
+            prePopulateTimeline();
         }
     }
 }

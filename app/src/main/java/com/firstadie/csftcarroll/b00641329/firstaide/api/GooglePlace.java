@@ -49,7 +49,11 @@ public class GooglePlace {
         return TextFormatUtils.kilometersToMiles(mDistance);
     }
 
-    public String getTravelTimeMinutes() {
+    public String getTravelTimeFormatted() {
         return TextFormatUtils.secondsToTime(mTravelTime);
+    }
+
+    public int getTravelTimeMinutes() {
+        return mTravelTime / 60;
     }
 }

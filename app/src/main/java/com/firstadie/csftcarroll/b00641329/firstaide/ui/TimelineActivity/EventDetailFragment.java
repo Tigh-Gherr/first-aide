@@ -85,7 +85,7 @@ public class EventDetailFragment extends Fragment
         });
 
         mDistanceTextView.setText(mGooglePlace.getDistanceMiles());
-        mTravelTimeTextView.setText(mGooglePlace.getTravelTimeMinutes());
+        mTravelTimeTextView.setText(mGooglePlace.getTravelTimeFormatted());
     }
 
     private void initGooglePlaces() {
