@@ -39,6 +39,10 @@ public class LocationSingleton {
         return latlng;
     }
 
+    public boolean isNull() {
+        return mLocationHelper == null || mLocationHelper.isNull() || !mLocationHelper.isLocationEnabled();
+    }
+
     public static void cancelLocationUpdates() {
         get().mLocationHelper.cancelUpdates();
     }

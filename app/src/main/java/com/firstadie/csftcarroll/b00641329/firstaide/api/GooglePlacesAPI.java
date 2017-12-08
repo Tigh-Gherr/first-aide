@@ -1,37 +1,29 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.api;
 
-import android.util.Log;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by tigh on 10/11/17.
+ * Created by tigh on 08/12/17.
  */
 
 public class GooglePlacesAPI extends API<GooglePlace> {
 
     public static final String PARAM_KEY = "key";
-    public static final String PARAM_ORIGIN = "origin";
-    public static final String PARAM_DESTINATION = "destination";
-    public static final String PARAM_UNITS = "units";
+    public static final String PARAM_ADDRESS = "address";
 
     public GooglePlacesAPI() {
         super();
 
         mAllowedParams.add(PARAM_KEY);
-        mAllowedParams.add(PARAM_ORIGIN);
-        mAllowedParams.add(PARAM_DESTINATION);
-        mAllowedParams.add(PARAM_UNITS);
+        mAllowedParams.add(PARAM_ADDRESS);
 
         addParam(PARAM_KEY, getAPIKey());
-        addParam(PARAM_UNITS, "imperial");
     }
 
     @Override
     public String getBaseUrl() {
-        return "https://maps.google.co.uk/maps/api/directions/json";
+        return "https://maps.google.co.uk/maps/api/geocode/json";
     }
 
     @Override
@@ -41,19 +33,14 @@ public class GooglePlacesAPI extends API<GooglePlace> {
 
     @Override
     public GooglePlace parse(String results) throws JSONException {
-        JSONObject resultJSON = new JSONObject(results);
-        JSONObject routeJSON = resultJSON.getJSONArray("routes").getJSONObject(0);
-        JSONObject legJSON = routeJSON.getJSONArray("legs").getJSONObject(0);
-        JSONObject endAddressJSON = legJSON.getJSONObject("end_location");
+        JSONObject json = new JSONObject(results);
+        JSONObject resultJSON = json.getJSONArray("results").getJSONObject(0);
+        JSONObject locationJSON = resultJSON.getJSONObject("geometry").getJSONObject("location");
 
-        int distance = legJSON.getJSONObject("distance").getInt("value");
-        int duration = legJSON.getJSONObject("duration").getInt("value");
-        String startAddress = legJSON.getString("start_address");
-        String endAddress = legJSON.getString("end_address");
+        double lat = locationJSON.getDouble("lat");
+        double lng = locationJSON.getDouble("lng");
+        String address = resultJSON.getString("formatted_address");
 
-        double lat = endAddressJSON.getDouble("lat");
-        double lng = endAddressJSON.getDouble("lng");
-
-        return new GooglePlace(distance, duration, startAddress, endAddress, lat, lng);
+        return new GooglePlace(0, 0, null, address, lat, lng);
     }
 }

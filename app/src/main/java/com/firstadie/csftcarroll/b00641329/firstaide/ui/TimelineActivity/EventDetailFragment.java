@@ -19,9 +19,9 @@ import android.widget.RelativeLayout;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.OnEndpointQueryCompleteListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
-import com.firstadie.csftcarroll.b00641329.firstaide.api.API;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlace;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesAPI;
+import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesDirectionsAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
@@ -84,24 +84,41 @@ public class EventDetailFragment extends Fragment
             }
         });
 
-        mDistanceTextView.setText(mGooglePlace.getDistanceMiles());
-        mTravelTimeTextView.setText(mGooglePlace.getTravelTimeFormatted());
+        if(!LocationSingleton.get().isNull()) {
+            mDistanceTextView.setText(mGooglePlace.getDistanceMiles());
+            mTravelTimeTextView.setText(mGooglePlace.getTravelTimeFormatted());
+        }
     }
 
-    private void initGooglePlaces() {
-        final API api = new GooglePlacesAPI();
+    private void initGooglePlacesWithTravelInfo() {
+        final GooglePlacesDirectionsAPI api = new GooglePlacesDirectionsAPI();
 
         api.setOnEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
             @Override
             public void onQueryComplete(String result) throws JSONException {
-                mGooglePlace = (GooglePlace) api.parse(result);
+                mGooglePlace = api.parse(result);
                 displayPlacesInfo();
             }
         });
 
-        api.addParam(GooglePlacesAPI.PARAM_ORIGIN, LocationSingleton.getFormattedLatLng());
-        api.addParam(GooglePlacesAPI.PARAM_DESTINATION, mCalendarEvent.getEventLocation());
+        api.addParam(GooglePlacesDirectionsAPI.PARAM_ORIGIN, LocationSingleton.getFormattedLatLng());
+        api.addParam(GooglePlacesDirectionsAPI.PARAM_DESTINATION, mCalendarEvent.getEventLocation());
 
+        api.query();
+    }
+
+    private void initGooglePlaces() {
+        final GooglePlacesAPI api = new GooglePlacesAPI();
+
+        api.setOnEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
+            @Override
+            public void onQueryComplete(String result) throws JSONException {
+                mGooglePlace = api.parse(result);
+                displayPlacesInfo();
+            }
+        });
+
+        api.addParam(GooglePlacesAPI.PARAM_ADDRESS, mCalendarEvent.getEventLocation());
         api.query();
     }
 
@@ -139,7 +156,7 @@ public class EventDetailFragment extends Fragment
         mEventDescriptionCardView = view.findViewById(R.id.cardview_eventDescriptionCard);
         mEventDescriptionTextView = view.findViewById(R.id.textview_eventDescription);
 
-        if(mCalendarEvent.getDescription().isEmpty()) {
+        if (mCalendarEvent.getDescription().isEmpty()) {
             mEventDescriptionCardView.setVisibility(View.GONE);
         } else {
             mEventDescriptionTextView.setText(mCalendarEvent.getDescription());
@@ -207,7 +224,11 @@ public class EventDetailFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        initGooglePlaces();
+        if(LocationSingleton.get().isNull()) {
+            initGooglePlaces();
+        } else {
+            initGooglePlacesWithTravelInfo();
+        }
     }
 
     @Override

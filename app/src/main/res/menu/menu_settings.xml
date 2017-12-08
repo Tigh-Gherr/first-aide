@@ -6,7 +6,7 @@
         android:id="@+id/action_new_hobby"
         android:orderInCategory="100"
         android:title="New Hobby"
-        android:icon="@drawable/ic_add_circle_outline_black_24dp"
+        android:icon="@drawable/ic_add_circle_outline_white_24dp"
         android:iconTint="@color/white"
         app:showAsAction="ifRoom"/>
 </menu>

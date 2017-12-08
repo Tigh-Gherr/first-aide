@@ -1,10 +1,15 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.ui.LoginActivity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
@@ -33,10 +38,14 @@ import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class LoginActivityFragment extends Fragment {
+
+    public static final int PERMISSION_REQUEST_CODE = 0;
 
     private AppCompatEditText mEmailEditText;
     private AppCompatEditText mPasswordEditText;
@@ -178,7 +187,63 @@ public class LoginActivityFragment extends Fragment {
 
         mSignInProgressBar = view.findViewById(R.id.progressbar_signIn);
 
-        LocationSingleton.get().setLocationHelper(new LocationHelper(getActivity()));
+        permissionCheck();
+
+    }
+
+    private void permissionCheck() {
+        String[] requiredPermissions = new String[]{
+                Manifest.permission.READ_CALENDAR,
+                Manifest.permission.WRITE_CALENDAR,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.INTERNET,
+                Manifest.permission.VIBRATE
+        };
+
+        ArrayList<String> forbiddenPermissions = new ArrayList<>();
+        for (String permission : requiredPermissions) {
+            if (ContextCompat.checkSelfPermission(getActivity(), permission) != PackageManager.PERMISSION_GRANTED) {
+                forbiddenPermissions.add(permission);
+            }
+        }
+
+        if (forbiddenPermissions.size() > 0) {
+            requestPermissions(
+                    forbiddenPermissions.toArray(new String[forbiddenPermissions.size()]),
+                    PERMISSION_REQUEST_CODE
+            );
+        } else {
+            LocationSingleton.get().setLocationHelper(new LocationHelper(getActivity()));
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0) {
+                    boolean allGranted = true;
+                    for (int result : grantResults) {
+                        allGranted &= result == PackageManager.PERMISSION_GRANTED;
+                    }
+
+                    if(!allGranted) {
+                        Snackbar.make(getView(), "All permissions are needed.", Snackbar.LENGTH_SHORT).show();
+                        mSignInButton.setEnabled(false);
+                        mCreateAccountButton.setEnabled(false);
+                    } else {
+                        LocationSingleton.get().setLocationHelper(new LocationHelper(getActivity()));
+                    }
+                } else {
+                    // Something something
+                    mSignInButton.setEnabled(false);
+                    mCreateAccountButton.setEnabled(false);
+                }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

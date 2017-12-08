@@ -18,6 +18,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.CalendarHelpe
 import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.TimelinePlanner;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
+import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
 
 import java.util.List;
 
@@ -58,17 +59,17 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
                 mUser.getUserHobbies()
         );
 
-        if(nextEvent == null || nextEvent.getEventLocation().isEmpty()) {
-            List<Event> timelineEvents = planner.planTimeline();
-            populateTimeline(timelineEvents);
+        planner.setOnPlanningFinishedListener(new TimelinePlanner.OnPlanningFinishedListener() {
+            @Override
+            public void onPlanningFinished(List<Event> timelineEvents) {
+                populateTimeline(timelineEvents);
+            }
+        });
+
+        if(nextEvent == null || nextEvent.getEventLocation().isEmpty() || LocationSingleton.get().isNull()) {
+            planner.planTimeline();
         } else {
             planner.planTimelineBeta(nextEvent);
-            planner.setOnPlanningFinishedListener(new TimelinePlanner.OnPlanningFinishedListener() {
-                @Override
-                public void onPlanningFinished(List<Event> timelineEvents) {
-                    populateTimeline(timelineEvents);
-                }
-            });
         }
 
     }

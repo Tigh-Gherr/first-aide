@@ -69,6 +69,11 @@ public class LocationHelper {
         return location;
     }
 
+    public boolean isLocationEnabled() {
+        return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+    }
+
     public double getLongitude() {
         return mLocation.getLongitude();
     }
@@ -79,6 +84,10 @@ public class LocationHelper {
 
     public void cancelUpdates() {
         mLocationManager.removeUpdates(mLocationListener);
+    }
+
+    public boolean isNull() {
+        return mLocation == null;
     }
 
 }
