@@ -96,7 +96,7 @@ public class UserHobbySettingsDialog extends AppCompatDialogFragment {
         mDurationEditText = mDialogContentView.findViewById(R.id.edittext_userHobbyDuration);
         mPriorityEditText = mDialogContentView.findViewById(R.id.edittext_userHobbyPriority);
 
-        if (mUserHobby != null) {
+        if(mUserHobby != null) {
             mTitleEditText.setText(mUserHobby.getTitle());
             mDurationEditText.setText(Integer.toString(mUserHobby.getDuration()));
             mPriorityEditText.setText(Integer.toString(mUserHobby.getPriority()));
@@ -125,7 +125,7 @@ public class UserHobbySettingsDialog extends AppCompatDialogFragment {
 
         AlertDialog dialog = (AlertDialog) getDialog();
 
-        if (dialog != null) {
+        if(dialog != null) {
             Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
             positiveButton.setOnClickListener(new View.OnClickListener() {
                 @Override

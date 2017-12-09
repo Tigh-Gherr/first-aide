@@ -19,6 +19,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.calendartools.TimelinePlann
 import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
 
 import java.util.List;
 
@@ -66,7 +67,8 @@ public class TimelineActivityFragment extends Fragment implements AccessibleFrag
             }
         });
 
-        if(nextEvent == null || nextEvent.getEventLocation().isEmpty() || LocationSingleton.get().isNull()) {
+        if(!NetworkUtils.isNetworkAvailable(getActivity()) || nextEvent == null ||
+                nextEvent.getEventLocation().isEmpty() || LocationSingleton.get().isNull()) {
             planner.planTimeline();
         } else {
             planner.planTimelineBeta(nextEvent);

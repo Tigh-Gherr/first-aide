@@ -24,6 +24,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesDirectionsAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,6 +48,7 @@ public class EventDetailFragment extends Fragment
     private AppCompatTextView mTimeTextView;
 
     private MapView mEventMapView;
+    private AppCompatTextView mMapsNoInternetTextView;
 
     private AppCompatTextView mDistanceTextView;
     private AppCompatTextView mTravelTimeTextView;
@@ -73,7 +75,13 @@ public class EventDetailFragment extends Fragment
         return fragment;
     }
 
+    private void displayNoInternetInfo() {
+        mEventMapView.setVisibility(View.INVISIBLE);
+        mMapsNoInternetTextView.setVisibility(View.VISIBLE);
+    }
+
     private void displayPlacesInfo() {
+        mMapsNoInternetTextView.setVisibility(View.GONE);
         mEventMapView.onCreate(null);
         mEventMapView.getMapAsync(new OnMapReadyCallback() {
             @Override
@@ -84,13 +92,14 @@ public class EventDetailFragment extends Fragment
             }
         });
 
-        if(!LocationSingleton.get().isNull()) {
+        if (!LocationSingleton.get().isNull()) {
             mDistanceTextView.setText(mGooglePlace.getDistanceMiles());
             mTravelTimeTextView.setText(mGooglePlace.getTravelTimeFormatted());
         }
     }
 
     private void initGooglePlacesWithTravelInfo() {
+        mMapsNoInternetTextView.setVisibility(View.GONE);
         final GooglePlacesDirectionsAPI api = new GooglePlacesDirectionsAPI();
 
         api.setOnEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
@@ -119,6 +128,7 @@ public class EventDetailFragment extends Fragment
         });
 
         api.addParam(GooglePlacesAPI.PARAM_ADDRESS, mCalendarEvent.getEventLocation());
+
         api.query();
     }
 
@@ -146,6 +156,10 @@ public class EventDetailFragment extends Fragment
         mPanelHeadingRelativeLayout = view.findViewById(R.id.relativelayout_topPanel);
 
         mEventMapView = view.findViewById(R.id.mapview_event);
+        mMapsNoInternetTextView = view.findViewById(R.id.textview_noInternetMapView);
+
+        mEventDescriptionCardView = view.findViewById(R.id.cardview_eventDescriptionCard);
+        mEventDescriptionTextView = view.findViewById(R.id.textview_eventDescription);
 
         String startTime = TextFormatUtils.epochToTime(mCalendarEvent.getStartTime());
         String endTime = TextFormatUtils.epochToTime(mCalendarEvent.getEndTime());
@@ -153,10 +167,7 @@ public class EventDetailFragment extends Fragment
         mTitleTextView.setText(mCalendarEvent.getTitle());
         mTimeTextView.setText(startTime + " - " + endTime);
 
-        mEventDescriptionCardView = view.findViewById(R.id.cardview_eventDescriptionCard);
-        mEventDescriptionTextView = view.findViewById(R.id.textview_eventDescription);
-
-        if (mCalendarEvent.getDescription().isEmpty()) {
+        if (mCalendarEvent.getDescription() == null || mCalendarEvent.getDescription().isEmpty()) {
             mEventDescriptionCardView.setVisibility(View.GONE);
         } else {
             mEventDescriptionTextView.setText(mCalendarEvent.getDescription());
@@ -224,10 +235,14 @@ public class EventDetailFragment extends Fragment
     public void onResume() {
         super.onResume();
 
-        if(LocationSingleton.get().isNull()) {
-            initGooglePlaces();
+        if(NetworkUtils.isNetworkAvailable(getActivity())) {
+            if (LocationSingleton.get().isNull()) {
+                initGooglePlaces();
+            } else {
+                initGooglePlacesWithTravelInfo();
+            }
         } else {
-            initGooglePlacesWithTravelInfo();
+            displayNoInternetInfo();
         }
     }
 

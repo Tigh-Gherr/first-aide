@@ -19,6 +19,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.UserHobby;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.AccessibleFragment;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import org.json.JSONException;
@@ -35,7 +36,15 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
 
     @Override
     public void passData(UserHobby data) {
-        displaySettingsDialog(data);
+        if(NetworkUtils.isNetworkAvailable(getActivity())) {
+            displaySettingsDialog(data);
+        } else {
+            Snackbar.make(
+                    getView(),
+                    "No internet connection. Cannot create new setting.",
+                    Snackbar.LENGTH_LONG
+            ).show();
+        }
     }
 
     public interface OnSettingConfirmedListener {
@@ -55,23 +64,33 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            if (!(direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT)) {
+            if(!(direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT)) {
                 return;
             }
 
             int position = viewHolder.getAdapterPosition();
-            UserHobby toBeDeleted = mUserHobbies.get(position);
+            if(NetworkUtils.isNetworkAvailable(getActivity())) {
+                UserHobby toBeDeleted = mUserHobbies.get(position);
 
-            mUserHobbies.remove(position);
-            mSettingsAdapter.notifyItemRemoved(position);
+                mUserHobbies.remove(position);
+                mSettingsAdapter.notifyItemRemoved(position);
 
-            PostAsyncTask task = new PostAsyncTask();
-            task.execute(TextFormatUtils.databaseUrlFor("delete_hobby.php"), toBeDeleted.toJSONString());
+                PostAsyncTask task = new PostAsyncTask();
+                task.execute(TextFormatUtils.databaseUrlFor("delete_hobby.php"), toBeDeleted.toJSONString());
+            } else {
+                Snackbar.make(
+                        getView(),
+                        "No internet connection. Cannot deleted hobby.",
+                        Snackbar.LENGTH_LONG
+                ).show();
+
+                mSettingsAdapter.notifyItemChanged(position);
+            }
         }
 
         @Override
         public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                 float width = viewHolder.itemView.getWidth();
                 float fadeBy = (Math.abs(dX) / width) * 2f;
                 float alpha = fadeBy <= 1f ? 1f - fadeBy : 0f;
@@ -92,8 +111,16 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
         dialog.setOnSettingConfirmedListener(new OnSettingConfirmedListener() {
             @Override
             public void onSettingConfirmed(Object setting) {
-                if (setting instanceof UserHobby) {
-                    postUserHobby((UserHobby) setting);
+                if(setting instanceof UserHobby) {
+                    if(NetworkUtils.isNetworkAvailable(getActivity())) {
+                        postUserHobby((UserHobby) setting);
+                    } else {
+                        Snackbar.make(
+                                getView(),
+                                "No internet connection. Cannot post user hobby.",
+                                Snackbar.LENGTH_LONG
+                        ).show();
+                    }
                 }
             }
         });
@@ -110,11 +137,11 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
             public void onQueryComplete(String result) throws JSONException {
                 Log.d(SettingsActivityFragment.class.getSimpleName(), result);
 
-                if (result == null) {
+                if(result == null) {
                     Snackbar.make(
                             getView(),
                             "An error occurred.",
-                            Snackbar.LENGTH_SHORT
+                            Snackbar.LENGTH_LONG
                     ).show();
 
                     return;
@@ -123,9 +150,9 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
                 JSONObject jsonResult = new JSONObject(result);
 
                 String hobbyType = jsonResult.getString("hobby_type");
-                if (hobbyType.equals("UPDATE")) {
+                if(hobbyType.equals("UPDATE")) {
                     mSettingsAdapter.notifyItemChanged(userHobby);
-                } else if (hobbyType.equals("NEW")) {
+                } else if(hobbyType.equals("NEW")) {
                     int id = jsonResult.getJSONObject("hobby").getInt("id");
                     userHobby.setId(id);
                     mSettingsAdapter.appendHobby(userHobby);
@@ -153,7 +180,15 @@ public class SettingsActivityFragment extends Fragment implements AccessibleFrag
         mSettingsAdapter.setOnHobbySelectedListener(new SettingsAdapter.OnHobbySelectedListener() {
             @Override
             public void onHobbySelected(UserHobby userHobby) {
-                displaySettingsDialog(userHobby);
+                if(NetworkUtils.isNetworkAvailable(getActivity())) {
+                    displaySettingsDialog(userHobby);
+                } else {
+                    Snackbar.make(
+                            getView(),
+                            "No internet connection. Cannot edit setting.",
+                            Snackbar.LENGTH_LONG
+                    ).show();
+                }
             }
         });
         mSettingsRecyclerView.setAdapter(mSettingsAdapter);
