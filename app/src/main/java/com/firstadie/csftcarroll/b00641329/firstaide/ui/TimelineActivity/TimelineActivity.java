@@ -1,6 +1,7 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -12,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -26,6 +28,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.events.Event;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.SettingsActivity.SettingsActivity;
 import com.firstadie.csftcarroll.b00641329.firstaide.ui.WeatherActivity.WeatherActivity;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.List;
@@ -47,6 +50,8 @@ public class TimelineActivity extends AppCompatActivity
     private ViewPager mCalendarEventViewPager;
 
     private AccessibleFragment<Event> mTimelineAccessibleFragment;
+
+    private AlertDialog mWeatherErrorDialog;
 
     private void initViewPager() {
         mTimelinePanelLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
@@ -118,6 +123,10 @@ public class TimelineActivity extends AppCompatActivity
     }
 
     private void processDeviceMovement(SensorEvent event) {
+        if(mWeatherErrorDialog != null && mWeatherErrorDialog.isShowing()) {
+            return;
+        }
+
         long currentTime = System.currentTimeMillis();
 
         float[] values = event.values;
@@ -135,8 +144,17 @@ public class TimelineActivity extends AppCompatActivity
         if (gForce >= SHAKE_THRESHOLD_GRAVITY && currentTime - mLastTimeRegistered > 400) {
             mLastTimeRegistered = currentTime;
 
-            mVibrator.vibrate(300);
-            startActivity(new Intent(TimelineActivity.this, WeatherActivity.class));
+            if(NetworkUtils.isNetworkAvailable(TimelineActivity.this)) {
+                mVibrator.vibrate(250);
+
+                startActivity(
+                        new Intent(TimelineActivity.this, WeatherActivity.class)
+                );
+            } else {
+                long[] vibratePattern = {0, 50, 100, 50};
+                mVibrator.vibrate(vibratePattern, -1);
+                mWeatherErrorDialog.show();
+            }
         }
     }
 
@@ -166,6 +184,21 @@ public class TimelineActivity extends AppCompatActivity
         }
     }
 
+    private AlertDialog buildWeatherErrorDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(TimelineActivity.this);
+
+        builder.setTitle("No Internet Connection")
+                .setMessage("Cannot display weather information.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+        return builder.create();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -177,6 +210,8 @@ public class TimelineActivity extends AppCompatActivity
         mCalendarEventViewPager = findViewById(R.id.viewpager_calendarEventDetails);
 
         mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
+        mWeatherErrorDialog = buildWeatherErrorDialog();
     }
 
     @Override

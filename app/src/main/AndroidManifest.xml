@@ -40,6 +40,7 @@
             android:name=".ui.WeatherActivity.WeatherActivity"
             android:label="@string/title_activity_weather"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             android:parentActivityName=".ui.TimelineActivity.TimelineActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

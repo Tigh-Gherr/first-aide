@@ -41,13 +41,13 @@ public class WeatherActivityFragment extends Fragment {
     private AppCompatTextView mDescriptionTextView;
 
 
-
     public WeatherActivityFragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setRetainInstance(true);
         return inflater.inflate(R.layout.fragment_weather, container, false);
     }
 
@@ -96,5 +96,10 @@ public class WeatherActivityFragment extends Fragment {
 
         mClothingRecyclerView.setAdapter(mClothingRecyclerViewAdapter);
         mClothingRecyclerView.setHasFixedSize(true);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

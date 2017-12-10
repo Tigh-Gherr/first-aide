@@ -2,11 +2,13 @@ package com.firstadie.csftcarroll.b00641329.firstaide.api;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 
+import java.io.Serializable;
+
 /**
  * Created by tigh on 12/11/17.
  */
 
-public class Weather {
+public class Weather implements Serializable {
 
     private String mDescription;
     private String mWeatherCode;
