@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.firstadie.csftcarroll.b00641329.firstaide.OnEndpointQueryCompleteListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
-import com.firstadie.csftcarroll.b00641329.firstaide.api.API;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.Weather;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.WeatherAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
@@ -47,7 +46,6 @@ public class WeatherActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        setRetainInstance(true);
         return inflater.inflate(R.layout.fragment_weather, container, false);
     }
 
@@ -66,19 +64,19 @@ public class WeatherActivityFragment extends Fragment {
 
         String lat = String.valueOf(LocationSingleton.get().getLatitude());
         String lon = String.valueOf(LocationSingleton.get().getLongitude());
-        final API api = new WeatherAPI();
+        final WeatherAPI api = new WeatherAPI();
 
         api.setOnEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
             @Override
             public void onQueryComplete(String result) throws JSONException {
-                Log.d(WeatherActivityFragment.this.getClass().getSimpleName(), result);
-                mWeather = (Weather) api.parse(result);
+                Log.d(WeatherActivityFragment.class.getSimpleName(), result);
+                mWeather = api.parse(result);
                 displayWeather(mWeather);
             }
         });
 
-        api.addParam("lat", lat);
-        api.addParam("lon", lon);
+        api.addParam(WeatherAPI.PARAM_LAT, lat);
+        api.addParam(WeatherAPI.PARAM_LON, lon);
         api.query();
 
         mClothingRecyclerView = view.findViewById(R.id.recyclerview_clothes);
@@ -96,10 +94,5 @@ public class WeatherActivityFragment extends Fragment {
 
         mClothingRecyclerView.setAdapter(mClothingRecyclerViewAdapter);
         mClothingRecyclerView.setHasFixedSize(true);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 }

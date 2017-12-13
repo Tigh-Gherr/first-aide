@@ -1,5 +1,7 @@
 package com.firstadie.csftcarroll.b00641329.firstaide.calendartools;
 
+import android.os.AsyncTask;
+
 import com.firstadie.csftcarroll.b00641329.firstaide.OnEndpointQueryCompleteListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlace;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesDirectionsAPI;
@@ -39,29 +41,11 @@ public class TimelinePlanner {
         mOnPlanningFinishedListener = onPlanningFinishedListener;
     }
 
-    public void planTimelineBeta(CalendarEvent nextEvent) {
-
-        final GooglePlacesDirectionsAPI api = new GooglePlacesDirectionsAPI();
-        String origin = LocationSingleton.get().getLatitude() + "," +
-                LocationSingleton.get().getLongitude();
-        api.addParam("origin", origin);
-        api.addParam("destination", nextEvent.getEventLocation());
-        final CalendarEvent finalNextEvent = nextEvent;
-        api.setOnEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
-            @Override
-            public void onQueryComplete(String result) throws JSONException {
-                GooglePlace googlePlace = api.parse(result);
-                List<Event> timelineEvents = planTimelineWithNextEvent(finalNextEvent, googlePlace);
-                if (mOnPlanningFinishedListener != null) {
-                    mOnPlanningFinishedListener.onPlanningFinished(timelineEvents);
-                }
-            }
-        });
-
-        api.query();
+    public void planTimelineWithNextEvent(CalendarEvent nextEvent) {
+        new PlanTimeWithNextEventAsyncTask().execute(nextEvent);
     }
 
-    public List<Event> planTimelineWithNextEvent(CalendarEvent nextEvent, GooglePlace googlePlace) {
+    private List<Event> generateTimelineWithNextEvent(CalendarEvent nextEvent, GooglePlace googlePlace) {
         List<Event> timelineEvents = new ArrayList<>();
         long previousEndTime = CalendarUtils.getStartOfDayInMillis();
 
@@ -86,24 +70,8 @@ public class TimelinePlanner {
     }
 
     public void planTimeline() {
-        List<Event> timelineEvents = new ArrayList<>();
-        long previousEndTime = CalendarUtils.getStartOfDayInMillis();
-
-        for (Event event : mCalendarEvents) {
-            bridgeEvents(event, previousEndTime, timelineEvents);
-            timelineEvents.add(event);
-            previousEndTime = event.getEndTime();
-        }
-
-        int freeTime = CalendarUtils.calculateDifferenceInMinutes(
-                mCalendarEvents.get(mCalendarEvents.size() - 1).getEndTime(),
-                CalendarUtils.getEndOfDayInMillis()
-        );
-        bridgeFreeTime(freeTime, timelineEvents);
-
-        if (mOnPlanningFinishedListener != null) {
-            mOnPlanningFinishedListener.onPlanningFinished(timelineEvents);
-        }
+        PlanTimelineAsyncTask task = new PlanTimelineAsyncTask();
+        task.execute();
     }
 
     private void bridgeEvents(Event event, long previousEndTime, List<Event> timelineEvents) {
@@ -118,15 +86,16 @@ public class TimelinePlanner {
                 .calculateDifferenceInMinutes(previousEndTime, event.getStartTime());
 
         bridgeFreeTime(freeTime - googlePlace.getTravelTimeMinutes(), timelineEvents);
+        timelineEvents.add(new UserHobby("Travel to event", googlePlace.getTravelTimeMinutes(), 5, -1));
     }
 
     private void bridgeFreeTime(int freeTime, List<Event> timelineEvents) {
         List<UserHobby> bridgeHobbies = new ArrayList<>();
-        List<UserHobby> shuffledHobbies = orderHobbies();
+        sortHobbiesByPriority();
 
         int timeBridged = 0;
-        for (int i = 0; i < shuffledHobbies.size() && timeBridged <= freeTime; i++) {
-            UserHobby hobby = shuffledHobbies.get(i);
+        for (int i = 0; i < mUserHobbies.size() && timeBridged <= freeTime; i++) {
+            UserHobby hobby = mUserHobbies.get(i);
             if (timeBridged + hobby.getDuration() < freeTime) {
                 timeBridged += hobby.getDuration();
                 bridgeHobbies.add(hobby);
@@ -136,15 +105,69 @@ public class TimelinePlanner {
         timelineEvents.addAll(bridgeHobbies);
     }
 
-    private List<UserHobby> orderHobbies() {
-        final ArrayList<UserHobby> userHobbies = (ArrayList<UserHobby>) mUserHobbies;
+    private void sortHobbiesByPriority() {
         Collections.sort(mUserHobbies, new Comparator<UserHobby>() {
             @Override
             public int compare(UserHobby userHobby, UserHobby t1) {
                 return t1.getPriority() - userHobby.getPriority();
             }
         });
+    }
 
-        return mUserHobbies;
+    private class PlanTimelineAsyncTask extends AsyncTask<Void, Void, List<Event>> {
+
+        @Override
+        protected List<Event> doInBackground(Void... voids) {
+            List<Event> timelineEvents = new ArrayList<>();
+            long previousEndTime = CalendarUtils.getStartOfDayInMillis();
+
+            for (Event event : mCalendarEvents) {
+                bridgeEvents(event, previousEndTime, timelineEvents);
+                timelineEvents.add(event);
+                previousEndTime = event.getEndTime();
+            }
+
+            int freeTime = CalendarUtils.calculateDifferenceInMinutes(
+                    mCalendarEvents.get(mCalendarEvents.size() - 1).getEndTime(),
+                    CalendarUtils.getEndOfDayInMillis()
+            );
+            bridgeFreeTime(freeTime, timelineEvents);
+
+            return timelineEvents;
+        }
+
+        @Override
+        protected void onPostExecute(List<Event> timelineEvents) {
+            if (mOnPlanningFinishedListener != null) {
+                mOnPlanningFinishedListener.onPlanningFinished(timelineEvents);
+            }
+        }
+    }
+
+    private class PlanTimeWithNextEventAsyncTask extends AsyncTask<Event, Void, List<Event>> {
+
+        @Override
+        protected List<Event> doInBackground(Event... events) {
+            final CalendarEvent nextEvent = (CalendarEvent) events[0];
+            final GooglePlacesDirectionsAPI api = new GooglePlacesDirectionsAPI();
+            String origin = LocationSingleton.get().getLatitude() + "," +
+                    LocationSingleton.get().getLongitude();
+            api.addParam(GooglePlacesDirectionsAPI.PARAM_ORIGIN, origin);
+            api.addParam(GooglePlacesDirectionsAPI.PARAM_DESTINATION, nextEvent.getEventLocation());
+
+            api.setOnEndpointQueryCompleteListener(new OnEndpointQueryCompleteListener() {
+                @Override
+                public void onQueryComplete(String result) throws JSONException {
+                    GooglePlace googlePlace = api.parse(result);
+                    List<Event> timelineEvents = generateTimelineWithNextEvent(nextEvent, googlePlace);
+                    if (mOnPlanningFinishedListener != null) {
+                        mOnPlanningFinishedListener.onPlanningFinished(timelineEvents);
+                    }
+                }
+            });
+
+            api.query();
+            return null;
+        }
     }
 }

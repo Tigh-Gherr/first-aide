@@ -24,6 +24,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.api.GooglePlacesDirectionsAPI;
 import com.firstadie.csftcarroll.b00641329.firstaide.events.CalendarEvent;
 import com.firstadie.csftcarroll.b00641329.firstaide.location.LocationSingleton;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.CalendarUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,6 +47,7 @@ public class EventDetailFragment extends Fragment
     private AppCompatImageView mArrowImageView;
     private AppCompatTextView mTitleTextView;
     private AppCompatTextView mTimeTextView;
+    private AppCompatTextView mTimeUntilEventTextView;
 
     private MapView mEventMapView;
     private AppCompatTextView mMapsNoInternetTextView;
@@ -149,6 +151,7 @@ public class EventDetailFragment extends Fragment
 
         mTitleTextView = view.findViewById(R.id.textview_eventTitle);
         mTimeTextView = view.findViewById(R.id.textview_eventTime);
+        mTimeUntilEventTextView = view.findViewById(R.id.textview_timeUntilEvent);
         mArrowImageView = view.findViewById(R.id.imageview_arrow);
         mDistanceTextView = view.findViewById(R.id.textview_distance);
         mTravelTimeTextView = view.findViewById(R.id.textview_travelTime);
@@ -163,6 +166,15 @@ public class EventDetailFragment extends Fragment
 
         String startTime = TextFormatUtils.epochToTime(mCalendarEvent.getStartTime());
         String endTime = TextFormatUtils.epochToTime(mCalendarEvent.getEndTime());
+
+        if(System.currentTimeMillis() < mCalendarEvent.getStartTime()) {
+            int minutesUntilEvent = CalendarUtils.calculateDifferenceInMinutes(System.currentTimeMillis(), mCalendarEvent.getStartTime());
+
+            String timeUntilEvent = TextFormatUtils.secondsToTime(minutesUntilEvent * 60);
+            mTimeUntilEventTextView.setText(" || " + timeUntilEvent);
+        } else {
+            mTimeUntilEventTextView.setVisibility(View.INVISIBLE);
+        }
 
         mTitleTextView.setText(mCalendarEvent.getTitle());
         mTimeTextView.setText(startTime + " - " + endTime);
@@ -210,6 +222,7 @@ public class EventDetailFragment extends Fragment
                 int value = (int) valueAnimator.getAnimatedValue();
                 mTitleTextView.setTextColor(value);
                 mTimeTextView.setTextColor(value);
+                mTimeUntilEventTextView.setTextColor(value);
                 mArrowImageView.setColorFilter(value);
             }
         });

@@ -16,6 +16,7 @@ public class GooglePlacesDirectionsAPI extends API<GooglePlace> {
     public static final String PARAM_ORIGIN = "origin";
     public static final String PARAM_DESTINATION = "destination";
     public static final String PARAM_UNITS = "units";
+    public static final String PARAM_MODE = "mode";
 
     public GooglePlacesDirectionsAPI() {
         super();
@@ -24,9 +25,11 @@ public class GooglePlacesDirectionsAPI extends API<GooglePlace> {
         mAllowedParams.add(PARAM_ORIGIN);
         mAllowedParams.add(PARAM_DESTINATION);
         mAllowedParams.add(PARAM_UNITS);
+        mAllowedParams.add(PARAM_MODE);
 
         addParam(PARAM_KEY, getAPIKey());
         addParam(PARAM_UNITS, "imperial");
+        addParam(PARAM_MODE, "walking");
     }
 
     @Override
@@ -48,12 +51,11 @@ public class GooglePlacesDirectionsAPI extends API<GooglePlace> {
 
         int distance = legJSON.getJSONObject("distance").getInt("value");
         int duration = legJSON.getJSONObject("duration").getInt("value");
-        String startAddress = legJSON.getString("start_address");
-        String endAddress = legJSON.getString("end_address");
+        String address = legJSON.getString("end_address");
 
         double lat = endAddressJSON.getDouble("lat");
         double lng = endAddressJSON.getDouble("lng");
 
-        return new GooglePlace(distance, duration, startAddress, endAddress, lat, lng);
+        return new GooglePlace(distance, duration, address, lat, lng);
     }
 }

@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.TimelineActivityFragment"
     tools:showIn="@layout/activity_timeline">
 
+    <LinearLayout
+        android:id="@+id/linearlayout_noTimeline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progressbar_noTimeline"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:indeterminate="true"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_noTimeline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="19sp"/>
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
+        android:visibility="invisible"
         android:id="@+id/recyclerview_timeline"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clipToPadding="false" >
+        android:clipToPadding="false">
 
 
     </android.support.v7.widget.RecyclerView>
 
-</LinearLayout>
+</FrameLayout>

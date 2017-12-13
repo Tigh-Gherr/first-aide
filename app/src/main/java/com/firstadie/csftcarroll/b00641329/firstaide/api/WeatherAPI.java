@@ -9,16 +9,21 @@ import org.json.JSONObject;
 
 public class WeatherAPI extends API<Weather> {
 
+    public static final String PARAM_APPID = "appid";
+    public static final String PARAM_LAT = "lat";
+    public static final String PARAM_LON = "lon";
+    public static final String PARAM_UNITS = "units";
+
     public WeatherAPI() {
         super();
 
-        mAllowedParams.add("appid");
-        mAllowedParams.add("lat");
-        mAllowedParams.add("lon");
-        mAllowedParams.add("units");
+        mAllowedParams.add(PARAM_APPID);
+        mAllowedParams.add(PARAM_LAT);
+        mAllowedParams.add(PARAM_LON);
+        mAllowedParams.add(PARAM_UNITS);
 
-        addParam("appid", getAPIKey());
-        addParam("units", "metric");
+        addParam(PARAM_APPID, getAPIKey());
+        addParam(PARAM_UNITS, "metric");
     }
 
     @Override

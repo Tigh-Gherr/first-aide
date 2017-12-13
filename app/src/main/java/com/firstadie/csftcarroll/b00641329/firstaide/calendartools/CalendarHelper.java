@@ -78,7 +78,7 @@ public class CalendarHelper {
         Log.d(getClass().getSimpleName(), builder.build().toString());
         StringBuilder clauseBuilder = new StringBuilder("(");
         String condition = "";
-        for (int i = 0; i < ids.size(); i++) {
+        for(int i = 0; i < ids.size(); i++) {
             clauseBuilder.append(condition)
                     .append(CalendarContract.Instances.CALENDAR_ID).append(" = ?");
             condition = " OR ";
@@ -94,7 +94,7 @@ public class CalendarHelper {
                 CalendarContract.Instances.BEGIN
         );
 
-        while (eventCursor.moveToNext()) {
+        while(eventCursor.moveToNext()) {
             int index = -1;
             int calendarId = eventCursor.getInt(++index);
             int eventId = eventCursor.getInt(++index);
@@ -123,10 +123,15 @@ public class CalendarHelper {
     private void findRightNow(List<Event> calendarEvents) {
         long currentTime = System.currentTimeMillis();
 
+        if(calendarEvents.size() == 0) {
+            calendarEvents.add(new RightNow(currentTime));
+            return;
+        }
+
         for(int i = 0; i < calendarEvents.size(); i++) {
             Event e = calendarEvents.get(i);
             if(currentTime < e.getStartTime()) {
-                if (i == 0) {
+                if(i == 0) {
                     calendarEvents.add(0, new RightNow(currentTime));
                     return;
                 } else {
@@ -155,7 +160,7 @@ public class CalendarHelper {
         );
 
         List<String> calendarIds = new ArrayList<>();
-        while (cursor.moveToNext()) {
+        while(cursor.moveToNext()) {
             String id = cursor.getString(0);
             calendarIds.add(id);
         }

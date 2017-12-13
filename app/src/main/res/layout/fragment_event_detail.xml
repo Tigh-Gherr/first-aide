@@ -31,6 +31,15 @@
             android:layout_marginTop="4dp"
             android:textColor="@color/black"/>
 
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_timeUntilEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@id/textview_eventTime"
+            android:layout_below="@id/textview_eventTitle"
+            android:textColor="@color/black"/>
+
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageview_arrow"
             android:layout_width="wrap_content"

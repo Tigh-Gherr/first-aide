@@ -76,6 +76,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
         switch (event.getEventType()) {
             case Event.CALENDAR_EVENT:
                 holder.mCalendarEventIcon.setVisibility(View.VISIBLE);
+                holder.mDurationTextView.setVisibility(View.VISIBLE);
                 holder.mEventLocationCardView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -88,6 +89,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineAdapter.Timeli
                 break;
             case Event.RIGHT_NOW:
                 holder.mCalendarEventIcon.setVisibility(View.GONE);
+                holder.mDurationTextView.setVisibility(View.GONE);
         }
 
         if(event.isCurrentEvent()) {

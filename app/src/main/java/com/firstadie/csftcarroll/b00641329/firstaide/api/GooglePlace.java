@@ -11,15 +11,17 @@ public class GooglePlace {
     private int mDistance;
     private int mTravelTime;
 
-    private String mStartAddress;
     private String mEndAddress;
 
     private LatLng mLatLng;
 
-    public GooglePlace(int distance, int travelTime, String startAddress, String endAddress, double lat, double lng) {
+    public GooglePlace(String address, double lat, double lng) {
+        new GooglePlace(0, 0, address, lat, lng);
+    }
+
+    public GooglePlace(int distance, int travelTime, String endAddress, double lat, double lng) {
         mDistance = distance;
         mTravelTime = travelTime;
-        mStartAddress = startAddress;
         mEndAddress = endAddress;
 
         mLatLng = new LatLng(lat, lng);
@@ -29,12 +31,8 @@ public class GooglePlace {
         return mDistance;
     }
 
-    public int getTravelTime() {
+    public int getTravelTimeSeconds() {
         return mTravelTime;
-    }
-
-    public String getStartAddress() {
-        return mStartAddress;
     }
 
     public String getEndAddress() {

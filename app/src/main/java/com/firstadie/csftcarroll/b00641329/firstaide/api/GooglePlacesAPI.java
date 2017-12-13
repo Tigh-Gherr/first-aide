@@ -41,6 +41,6 @@ public class GooglePlacesAPI extends API<GooglePlace> {
         double lng = locationJSON.getDouble("lng");
         String address = resultJSON.getString("formatted_address");
 
-        return new GooglePlace(0, 0, null, address, lat, lng);
+        return new GooglePlace(address, lat, lng);
     }
 }

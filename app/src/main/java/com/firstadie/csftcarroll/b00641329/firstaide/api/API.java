@@ -89,7 +89,7 @@ public abstract class API<T> {
                 connection.connect();
 
                 if(connection.getResponseCode() != HttpsURLConnection.HTTP_OK) {
-                    Log.d(API.this.getClass().getSimpleName(), "NOT OK: " + connection.getResponseCode());
+                    Log.d(API.class.getSimpleName(), "NOT OK: " + connection.getResponseCode());
                     return null;
                 }
 
