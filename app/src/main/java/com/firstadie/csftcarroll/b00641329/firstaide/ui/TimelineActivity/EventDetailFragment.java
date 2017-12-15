@@ -96,7 +96,7 @@ public class EventDetailFragment extends Fragment
 
         if (!LocationSingleton.get().isNull()) {
             mDistanceTextView.setText(mGooglePlace.getDistanceMiles());
-            mTravelTimeTextView.setText(mGooglePlace.getTravelTimeFormatted());
+            mTravelTimeTextView.setText(mGooglePlace.getTravelTimeFormatted() + " to travel.");
         }
     }
 

@@ -9,12 +9,12 @@ import android.widget.Toast;
  * Created by tigh on 04/11/17.
  */
 
-public class LoginUtils {
+public class ValidationUtils {
     public static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     public static boolean isValidPassword(String password) {
-        return true;
+        return password.trim().length() >= 8;
     }
 }

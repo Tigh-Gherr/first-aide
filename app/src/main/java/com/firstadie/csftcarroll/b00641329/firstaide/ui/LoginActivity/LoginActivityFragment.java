@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
@@ -31,7 +30,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.ui.TimelineActivity.Timelin
 import com.firstadie.csftcarroll.b00641329.firstaide.User;
 import com.firstadie.csftcarroll.b00641329.firstaide.UserSingleton;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.EncryptionUtils;
-import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.ValidationUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.NetworkUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
@@ -61,11 +60,11 @@ public class LoginActivityFragment extends Fragment {
         String email = mEmailEditText.getText().toString().trim().toLowerCase();
         String password = mPasswordEditText.getText().toString();
 
-        if (!LoginUtils.isValidEmail(email)) {
+        if (!ValidationUtils.isValidEmail(email)) {
             mEmailEditText.setError("Email address is not valid.");
         }
 
-        if (!LoginUtils.isValidPassword(password)) {
+        if (!ValidationUtils.isValidPassword(password)) {
             mPasswordEditText.setError("Password does not meet criteria.");
         }
 

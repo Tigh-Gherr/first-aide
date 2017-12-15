@@ -25,7 +25,7 @@ import com.firstadie.csftcarroll.b00641329.firstaide.OnUserConfirmedListener;
 import com.firstadie.csftcarroll.b00641329.firstaide.PostAsyncTask;
 import com.firstadie.csftcarroll.b00641329.firstaide.R;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.EncryptionUtils;
-import com.firstadie.csftcarroll.b00641329.firstaide.utils.LoginUtils;
+import com.firstadie.csftcarroll.b00641329.firstaide.utils.ValidationUtils;
 import com.firstadie.csftcarroll.b00641329.firstaide.utils.TextFormatUtils;
 
 import org.json.JSONException;
@@ -309,7 +309,7 @@ public class CreateAccountDialog extends AppCompatDialogFragment {
             return isValid;
         }
 
-        if (!LoginUtils.isValidEmail(mEmailEditText.getText().toString().trim())) {
+        if (!ValidationUtils.isValidEmail(mEmailEditText.getText().toString().trim())) {
             mEmailEditText.setError("Invalid Email");
             errorView = mEmailEditText;
             isValid = false;
